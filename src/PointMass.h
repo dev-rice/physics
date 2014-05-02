@@ -15,15 +15,14 @@ public:
 	void print();
 
 	Vector get_velocity() {return velocity;}
-	double get_x(){return x;}
-	double get_y(){return y;}
-	double get_z(){return z;}
+	Vector get_position() {return position;}
+	
 	double get_mass(){return mass;}
 
 private:
-	double x, y, z; 
 	double mass;
 	
+	Vector position;
 	Vector velocity;
 	Vector force;
 };

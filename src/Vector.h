@@ -19,6 +19,14 @@ struct Vector {
 		return added;
 	}
 
+	Vector operator -(const Vector in) const {
+		Vector subtracted;
+		subtracted.x = this->x - in.x;
+		subtracted.y = this->y - in.y;
+		subtracted.z = this->z - in.z;
+		return subtracted;
+	}
+
 	Vector operator *(const double multiple) const {
 		return Vector(this->x * multiple, this->y * multiple, this->z * multiple);
 	}
@@ -30,6 +38,7 @@ struct Vector {
 	void print() const{
 		printf("x = %f, y = %f, z = %f\n", x, y, z);
 	}
+
 };
 
 #endif Vector_h
