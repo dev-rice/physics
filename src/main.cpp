@@ -31,7 +31,7 @@ int main() {
 	a.set_velocity(a_initial);
 	b.set_velocity(b_initial);
 
-	GravityHandler handler();
+	GravityHandler handler;
 	handler.add_point_mass(a);
 	handler.add_point_mass(b);
 
