@@ -4,57 +4,46 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <cmath>
+#include <cstdlib>
+#include <time.h>
 
-Vector calculate_gravity_vector(PointMass a, PointMass b){
-	// Takes two point masses a and b and finds the gravity
-	// force vector of a, influenced by b.
-	// F = (G M1 M2) / r ^ 2
-	
-	Vector direction = b.get_position() - a.get_position();
-	// Watch out for when r_squared gets really small.
-	// This has some weird effect on the physics calculations
-	double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
-	double G = 0.0000000000667384;
-	double F = (G * a.get_mass() * b.get_mass()) / r_squared;
-	
-	return direction * F;
+double fRand(double fMin, double fMax) {
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
 }
 
+PointMass random_point(){
+	double x = fRand(0.0, 1.0);
+	double y = fRand(0.0, 1.0);
+	double z = fRand(0.0, 1.0);
+	double mass = 1000.0 * double(rand() % 100);
+
+	PointMass a(x, y, z, mass);
+	
+	double vx = fRand(0.0, 1.0);
+	double vy = fRand(0.0, 1.0);
+	double vz = fRand(0.0, 1.0);
+
+	a.set_velocity(Vector(vx, vy, vz));
+
+	return a;
+}
 
 int main() {
-	PointMass a(0.0, 0.0, 0.0, 1.0);
-	PointMass b(1.0, 0.0, 0.0, 10000000.0);
 
-	Vector a_initial(0.0, 0.01, 0.0);
-	Vector b_initial(0.0, 0.0, 0.0);
-
-	a.set_velocity(a_initial);
-	b.set_velocity(b_initial);
+	srand(time(NULL));
 
 	GravityHandler handler;
-	handler.add_point_mass(a);
-	handler.add_point_mass(b);
+	for (int i = 0; i < 1000; ++i){
+		handler.add_point_mass(random_point());
+	}
 
-	handler.print();
+	double tick = 0.01;
 
-	/*while(true){
-		Vector a_gravity_vector = calculate_gravity_vector(a, b);
-		Vector b_gravity_vector = calculate_gravity_vector(b, a);
-
-		a.add_force(a_gravity_vector);
-		b.add_force(b_gravity_vector);
-
-		a.update(0.01);
-		b.update(0.01);
-
-		usleep(10000);
-		
-		printf("PointMass a: ");
-		a.print();
-		printf("PointMass b: ");
-		b.print();
-
-		printf("\n");
-	}*/
-
+	while(true){
+		handler.update(tick);
+		//handler.print();
+		//printf("\033[2J\033[1;1H");
+		usleep(1000000 * tick);
+	}
 }
