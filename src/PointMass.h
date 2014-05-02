@@ -1,5 +1,6 @@
 #include "Vector.h"
 #include <vector>
+#include <SFML/Graphics.hpp>
 
 #ifndef Point_h
 #define Point_h

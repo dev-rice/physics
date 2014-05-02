@@ -17,6 +17,8 @@ public:
 	void add_point_mass(PointMass a) {points.push_back(a);}
 	void print();
 
+	std::vector<PointMass> get_points(){return points;}
+
 private:
 	std::vector<PointMass> points;
 };
