@@ -1,4 +1,5 @@
 #include "Vector.h"
+#include <vector>
 
 #ifndef Point_h
 #define Point_h
@@ -10,7 +11,8 @@ public:
 	void update (double);
 
 	void set_velocity(Vector velocity) {this->velocity = velocity;}
-	void apply_force(Vector);
+	void add_force(Vector);
+	Vector calculate_force();
 
 	void print();
 
@@ -24,7 +26,8 @@ private:
 	
 	Vector position;
 	Vector velocity;
-	Vector force;
+
+	std::vector<Vector> forces;
 };
 
 #endif Point_h
