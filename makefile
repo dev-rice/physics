@@ -1,2 +1,2 @@
 all:
-	g++ -w *.cpp -o physics.o
+	g++ -w src/*.cpp -o physics.o
