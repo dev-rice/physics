@@ -1,5 +1,6 @@
 #include "PointMass.h"
 #include "Vector.h"
+#include "GravityHandler.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <cmath>
@@ -29,6 +30,12 @@ int main() {
 
 	a.set_velocity(a_initial);
 	b.set_velocity(b_initial);
+
+	GravityHandler handler();
+	handler.add_point_mass(a);
+	handler.add_point_mass(b);
+
+	handler.print();
 
 	while(true){
 		Vector a_gravity_vector = calculate_gravity_vector(a, b);
