@@ -16,7 +16,6 @@ double fRand(double fMin, double fMax) {
 PointMass random_point(){
 	double x = fRand(1.0, 5.0);
 	double y = fRand(1.0, 5.0);
-	//double z = fRand(2.0, 4.0);
 	double z = 0.0;
 	double mass = 1000.0 * double(rand() % 100);
 
@@ -24,8 +23,6 @@ PointMass random_point(){
 	
 	double vx = fRand(2.0, 5.0);
 	double vy = fRand(2.0, 5.0);
-	//double vx = 0.0;
-	//double vy = 0.0;
 	double vz = 0.0;
 	a.set_velocity(Vector(vx, vy, vz));
 
@@ -35,26 +32,25 @@ PointMass random_point(){
 GravityHandler populate_gravity_handler(int size){
 	srand(time(NULL));
 	GravityHandler handler;
-	//for (int i = 0; i < size; ++i){
-	//	handler.add_point_mass(random_point());	
-	//}
-	PointMass a(2.0, 3.0, 0.0, 10000);
-	a.set_velocity(Vector(0.0, 10.0, 0.0));
+	for (int i = 0; i < size; ++i){
+		handler.add_point_mass(random_point());	
+	}
+
 	handler.add_point_mass(PointMass(3.0, 3.0, 0.0, 1000000000000));
-	handler.add_point_mass(a);
+	
 	return handler;
 }
 
 int main() {
 
-
 	GravityHandler handler = populate_gravity_handler(100);	
-	double tick = 0.001;
+	double tick = 0.005;
 
 	std::vector<sf::CircleShape> points;
 
 	std::vector<PointMass> point_masses = handler.get_points();
 	for (int i = 0; i < point_masses.size(); ++i){
+		int radius = rand() % 2 + 1;
 		sf::CircleShape point(2);
 		point.setPosition(point_masses[i].get_position().x * 100, point_masses[i].get_position().y * 100);
 		
@@ -73,7 +69,7 @@ int main() {
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 16;
 
-	sf::RenderWindow window(sf::VideoMode(600, 600), "SFML shapes", sf::Style::Default, settings);
+	sf::RenderWindow window(sf::VideoMode(600, 600), "Gravity", sf::Style::Default, settings);
     sf::CircleShape shape(2);
     shape.setFillColor(sf::Color::Blue);
 
