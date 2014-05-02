@@ -37,7 +37,7 @@ int main() {
 
 	handler.print();
 
-	while(true){
+	/*while(true){
 		Vector a_gravity_vector = calculate_gravity_vector(a, b);
 		Vector b_gravity_vector = calculate_gravity_vector(b, a);
 
@@ -55,6 +55,6 @@ int main() {
 		b.print();
 
 		printf("\n");
-	}
+	}*/
 
 }
