@@ -9,9 +9,10 @@ public:
 
 	void update (double);
 
-	void set_velocity(Vector velocity){this->velocity = velocity;}
-	 
+	void set_velocity(Vector velocity) {this->velocity = velocity;}
 	void apply_force(Vector);
+
+	void print();
 
 	Vector get_velocity() {return velocity;}
 	double get_x(){return x;}
@@ -22,8 +23,9 @@ public:
 private:
 	double x, y, z; 
 	double mass;
+	
 	Vector velocity;
-	Vector acceleration;
+	Vector force;
 };
 
 #endif Point_h

@@ -7,9 +7,8 @@ PointMass::PointMass(double x, double y, double z, double mass){
 }
 
 void PointMass::update(double dt){
-	velocity.x = velocity.x + dt * acceleration.x;
-	velocity.y = velocity.y + dt * acceleration.y;
-	velocity.z = velocity.z + dt * acceleration.z;
+
+	velocity = velocity + ((force / mass) * dt);
 
 	x = x + dt * velocity.x;
 	y = y + dt * velocity.y;
@@ -19,11 +18,9 @@ void PointMass::update(double dt){
 
 void PointMass::apply_force(Vector force){
 	Vector new_acceleration; 
-	new_acceleration.x = force.x / mass;
-	new_acceleration.y = force.y / mass;
-	new_acceleration.z = force.z / mass;
+	this -> force = force;
+}
 
-	acceleration.x = acceleration.x + new_acceleration.x;
-	acceleration.y = acceleration.y + new_acceleration.y;
-	acceleration.z = acceleration.z + new_acceleration.z;
+void PointMass::print(){
+	printf("x = %f, y = %f, z = %f, mass = %f\n", x, y, z, mass);
 }
