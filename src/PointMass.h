@@ -1,11 +1,13 @@
 #include "Vector.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <cmath>
+#include <cstdlib>
 
 #ifndef Point_h
 #define Point_h
 
-class PointMass {
+class PointMass : public sf::CircleShape {
 public:
 	PointMass(double, double, double, double);
 
@@ -22,11 +24,18 @@ public:
 	
 	double get_mass(){return mass;}
 
+	// SFML overrides
+	virtual unsigned int getPointCount() const;
+    virtual sf::Vector2f getPoint(unsigned int index) const;
+
 private:
 	double mass;
-	
 	Vector position;
 	Vector velocity;
+
+	// Still a point mass, radius
+	// is for SFML
+	int radius;
 
 	std::vector<Vector> forces;
 };

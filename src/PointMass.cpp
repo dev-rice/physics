@@ -3,6 +3,16 @@
 PointMass::PointMass(double x, double y, double z, double mass){	
 	this->mass = mass;
 	position = Vector(x, y, z);
+
+	int r = rand() % 200 + 55;
+	int g = rand() % 200 + 55;
+	int b = rand() % 200 + 55;
+
+
+	radius = log10(mass) - 2;
+
+	sf::CircleShape::setFillColor(sf::Color(r, g, b));
+	sf::CircleShape::update();
 }
 
 void PointMass::update(double dt){
@@ -12,6 +22,8 @@ void PointMass::update(double dt){
 
 	velocity = velocity + ((force / mass) * dt);
 	position = position + (velocity * dt);
+
+	sf::Shape::setPosition(position.x, position.y);
 
 	// Clear vector of force Vectors
 	forces.clear();
@@ -44,4 +56,19 @@ Vector PointMass::calculate_force(){
 
 void PointMass::print(){
 	printf("x = %f, y = %f, z = %f, mass = %f\n", position.x, position.y, position.z, mass);
+}
+
+// SFML overrides
+unsigned int PointMass::getPointCount() const {
+	return 30; // fixed, but could be an attribute of the class if needed
+}
+
+sf::Vector2f PointMass::getPoint(unsigned int index) const {
+	static const float pi = 3.141592654f;
+
+	float angle = index * 2 * pi / getPointCount() - pi / 2;
+	float x = std::cos(angle) * radius;
+	float y = std::sin(angle) * radius;
+
+	return sf::Vector2f(radius + x, radius + y);
 }

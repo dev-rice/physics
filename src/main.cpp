@@ -8,22 +8,17 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-double fRand(double fMin, double fMax) {
-    double f = (double)rand() / RAND_MAX;
-    return fMin + f * (fMax - fMin);
-}
-
 PointMass random_point(){
-	double x = fRand(1.0, 5.0);
-	double y = fRand(1.0, 5.0);
+	double x = rand() % 5 + 1;
+	double y = rand() % 5 + 1;
 	double z = 0.0;
-	double mass = 1000.0 * double(rand() % 100);
-
+	double mass = 10000.0;
 	PointMass a(x, y, z, mass);
-	
-	double vx = fRand(2.0, 5.0);
-	double vy = fRand(2.0, 5.0);
+
+	double vx = 0.0;
+	double vy = 1.0;
 	double vz = 0.0;
+
 	a.set_velocity(Vector(vx, vy, vz));
 
 	return a;
@@ -32,69 +27,78 @@ PointMass random_point(){
 GravityHandler populate_gravity_handler(int size){
 	srand(time(NULL));
 	GravityHandler handler;
-	for (int i = 0; i < size; ++i){
-		handler.add_point_mass(random_point());	
-	}
 
-	handler.add_point_mass(PointMass(3.0, 3.0, 0.0, 1000000000000));
+	handler.add_point_mass(PointMass(400.0, 400.0, 0.0, 100000000000));
 	
 	return handler;
 }
 
 int main() {
 
-	GravityHandler handler = populate_gravity_handler(100);	
-	double tick = 0.005;
+	bool mousePressed = false;
 
-	std::vector<sf::CircleShape> points;
-
-	std::vector<PointMass> point_masses = handler.get_points();
-	for (int i = 0; i < point_masses.size(); ++i){
-		int radius = rand() % 2 + 1;
-		sf::CircleShape point(2);
-		point.setPosition(point_masses[i].get_position().x * 100, point_masses[i].get_position().y * 100);
-		
-		if (point_masses[i].get_mass() >= 100000000000){
-			point.setFillColor(sf::Color(200, 200, 200));
-			point.setRadius(4);
-		} else {
-			int r = rand() % 205 + 50;
-			int g = rand() % 205 + 50;
-			int b = rand() % 205 + 50;
-			point.setFillColor(sf::Color(r, g, b));
-		}
-		points.push_back(point);
-	}
+	GravityHandler handler = populate_gravity_handler(1);	
+	double tick = 0;
 
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 16;
+	settings.antialiasingLevel = 4;
 
-	sf::RenderWindow window(sf::VideoMode(600, 600), "Gravity", sf::Style::Default, settings);
-    sf::CircleShape shape(2);
-    shape.setFillColor(sf::Color::Blue);
+	sf::RenderWindow window(sf::VideoMode(800, 800), "Gravity", sf::Style::Default, settings);
 
     while (window.isOpen()) {
+		clock_t begin = clock();
+
 		sf::Event event;
 		
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-
+		
 		window.clear();
-		point_masses = handler.get_points();
-		for (int i = 0; i < points.size(); ++i){
-			points[i].setPosition(point_masses[i].get_position().x * 100, point_masses[i].get_position().y * 100);
-			window.draw(points[i]);
+		
+		std::vector<PointMass> point_masses = handler.get_points();
+		for (int i = 0; i < point_masses.size(); ++i){
+			window.draw(point_masses[i]);
 		}
+		
 		window.display();
 
 		handler.update(tick);
+		//usleep(100000);
 		//handler.print();
-		//printf("\033[2J\033[1;1H");
-		usleep(1000000 * tick);
+		//printf("\033[2J\033[1;1H");	
 
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		    // left mouse button is pressed
+    		mousePressed = true;
+
+    		
+		} else if (mousePressed == true){
+			mousePressed = false;
 		
+			int mouse_x = sf::Mouse::getPosition().x;
+			int mouse_y = sf::Mouse::getPosition().y;
+
+			PointMass a(mouse_x, mouse_y, 0.0, 10000.0);
+
+			double vx = 0.0;
+			double vy = 50.0;
+			double vz = 0.0;
+
+			a.set_velocity(Vector(vx, vy, vz));
+
+			handler.add_point_mass(a);
+		}
+		
+
+  		clock_t end = clock();
+  		double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+		//printf("Loop time = %lf\n", elapsed_secs);
+		tick = elapsed_secs;
+		if (tick == 0) {
+			printf("Zero tick, shouldn't calculate %d\n", rand());
+		}
     }
 
     return 0;

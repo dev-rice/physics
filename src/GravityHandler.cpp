@@ -9,7 +9,7 @@ Vector GravityHandler::calculate_gravity_vector(PointMass a, PointMass b){
 	// Watch out for when r_squared gets really small.
 	// This has some weird effect on the physics calculations
 	double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
-	double G = 0.0000000000667384;
+
 	double F = (G * a.get_mass() * b.get_mass()) / r_squared;
 	
 	// Checks if the distance squared is 0
