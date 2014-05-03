@@ -4,13 +4,13 @@ PointMass::PointMass(double x, double y, double z, double mass){
 	this->mass = mass;
 	position = Vector(x, y, z);
 
+
 	int r = rand() % 200 + 55;
 	int g = rand() % 200 + 55;
 	int b = rand() % 200 + 55;
 
-
-	radius = log10(mass) - 2;
-
+	//radius = log10(mass);
+	radius = 2;
 	sf::CircleShape::setFillColor(sf::Color(r, g, b));
 	sf::CircleShape::update();
 }
@@ -19,9 +19,13 @@ void PointMass::update(double dt){
 	// Sum up all of the force Vectors
 	// to get a resulting force Vector
 	Vector force = calculate_force();
+	Vector acceleration = force / mass;
 
-	velocity = velocity + ((force / mass) * dt);
+	velocity = velocity + (acceleration * dt);
 	position = position + (velocity * dt);
+
+	velocity.print();
+	printf("  Magnitude = %f\n", velocity.magnitude());
 
 	sf::Shape::setPosition(position.x, position.y);
 
@@ -35,6 +39,7 @@ void PointMass::add_force(Vector force){
 	// The force vectors will be calculated
 	// in calculate_force, which is called every 
 	// update.	
+
 	forces.push_back(force);
 }
 
@@ -43,7 +48,6 @@ Vector PointMass::calculate_force(){
 	// force acting on them at a time. Apply force
 	// just overrides any current force and makes
 	// a new one
-	// this -> force = force;
 	Vector force;
 
 	for (int i = 0; i < forces.size(); ++i){

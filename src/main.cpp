@@ -28,7 +28,7 @@ GravityHandler populate_gravity_handler(int size){
 	srand(time(NULL));
 	GravityHandler handler;
 
-	handler.add_point_mass(PointMass(400.0, 400.0, 0.0, 100000000000));
+	handler.add_point_mass(PointMass(300.0, 300.0, 0.0, 100.0));
 	
 	return handler;
 }
@@ -38,12 +38,12 @@ int main() {
 	bool mousePressed = false;
 
 	GravityHandler handler = populate_gravity_handler(1);	
-	double tick = 0;
+	double tick = 0.01;
 
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 4;
 
-	sf::RenderWindow window(sf::VideoMode(800, 800), "Gravity", sf::Style::Default, settings);
+	sf::RenderWindow window(sf::VideoMode(600, 600), "Gravity", sf::Style::Default, settings);
 
     while (window.isOpen()) {
 		clock_t begin = clock();
@@ -65,7 +65,7 @@ int main() {
 		window.display();
 
 		handler.update(tick);
-		//usleep(100000);
+		usleep(100000 * tick);
 		//handler.print();
 		//printf("\033[2J\033[1;1H");	
 
@@ -77,28 +77,30 @@ int main() {
 		} else if (mousePressed == true){
 			mousePressed = false;
 		
-			int mouse_x = sf::Mouse::getPosition().x;
-			int mouse_y = sf::Mouse::getPosition().y;
+			int mouse_x = sf::Mouse::getPosition(window).x;
+			int mouse_y = sf::Mouse::getPosition(window).y;
+			if (mouse_x <= 600 && mouse_x > 0 && mouse_y <= 600 && mouse_y > 0){
+				PointMass a(mouse_x, mouse_y, 0.0, 1.0);
 
-			PointMass a(mouse_x, mouse_y, 0.0, 10000.0);
+				double vx = 0.0;
+				double vy = 10.0;
+				double vz = 0.0;
 
-			double vx = 0.0;
-			double vy = 50.0;
-			double vz = 0.0;
+				a.set_velocity(Vector(vx, vy, vz));
 
-			a.set_velocity(Vector(vx, vy, vz));
-
-			handler.add_point_mass(a);
+				handler.add_point_mass(a);
+			}
 		}
 		
 
-  		clock_t end = clock();
-  		double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  		//clock_t end = clock();
+  		//double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 		//printf("Loop time = %lf\n", elapsed_secs);
-		tick = elapsed_secs;
-		if (tick == 0) {
-			printf("Zero tick, shouldn't calculate %d\n", rand());
-		}
+		//if (tick < 0.01){
+		//	tick = 0.01;
+		//} else {
+		//	tick = elapsed_secs;
+		//}
     }
 
     return 0;

@@ -2,6 +2,7 @@
 #define Vector_h
 
 #include <stdio.h>
+#include <cmath>
 
 struct Vector {
 	double x;
@@ -34,6 +35,10 @@ struct Vector {
 	Vector operator /(const double dividend) const {
 		return Vector(this->x / dividend, this->y / dividend, this->z / dividend);
 	}	
+
+	double magnitude(){
+		return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+	}
 
 	void print() const{
 		printf("x = %f, y = %f, z = %f\n", x, y, z);

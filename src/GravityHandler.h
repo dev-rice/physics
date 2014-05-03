@@ -24,7 +24,7 @@ private:
 
 	//static const double G = 1.0;
 	//static const double G = 0.0000000000667384;
-	static const double G = 0.0000000667384;
+	static const double G = 1.0;
 
 };
 
