@@ -12,6 +12,7 @@ public:
 	GravityHandler() {;}
 
 	Vector calculate_gravity_vector(PointMass, PointMass);
+	Vector get_direction_vector(PointMass, PointMass);
 
 	void update(double);
 	void add_point_mass(PointMass a) {points.push_back(a);}

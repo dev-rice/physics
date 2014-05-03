@@ -16,7 +16,7 @@ PointMass random_point(){
 	PointMass a(x, y, z, mass);
 
 	double vx = 0.0;
-	double vy = 1.0;
+	double vy = 10.0;
 	double vz = 0.0;
 
 	a.set_velocity(Vector(vx, vy, vz));
@@ -62,15 +62,16 @@ int main() {
 			window.draw(point_masses[i]);
 		}
 		
-		Vector position = point_masses[1].get_position();
-		Vector force = point_masses[1].get_force();
+		if (handler.get_points().size() == 2){
+			Vector position = point_masses[1].get_position();
+			Vector direction = handler.get_direction_vector(point_masses[1], point_masses[0]);
+			sf::Vertex line[] = {
+				sf::Vertex(sf::Vector2f(position.x, position.y)),
+				sf::Vertex(sf::Vector2f(position.x + direction.x, position.y + direction.y))
+			};
 
-		sf::Vertex line[] = {
-			sf::Vertex(sf::Vector2f(position.x, position.y)),
-			sf::Vertex(sf::Vector2f(position.x + (50 * force.x), position.y + (50 * force.y)))
-		};
-
-		window.draw(line, 2, sf::Lines);
+			window.draw(line, 2, sf::Lines);
+		}
 
 		window.display();
 
@@ -94,7 +95,7 @@ int main() {
 					PointMass a(mouse_x, mouse_y, 0.0, 1.0);
 
 					double vx = 0.0;
-					double vy = 10.0;
+					double vy = 25.0;
 					double vz = 0.0;
 
 					a.set_velocity(Vector(vx, vy, vz));

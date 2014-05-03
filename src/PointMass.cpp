@@ -19,13 +19,11 @@ PointMass::PointMass(double x, double y, double z, double mass){
 void PointMass::update(double dt){
 	// Sum up all of the force Vectors
 	// to get a resulting force Vector
+	force = calculate_force();
 	Vector acceleration = force / mass;
 
 	velocity = velocity + (acceleration * dt);
 	position = position + (velocity * dt);
-
-	//velocity.print();
-	//printf("  Magnitude = %f\n", velocity.magnitude());
 
 	sf::Shape::setPosition(position.x, position.y);
 
@@ -40,8 +38,8 @@ void PointMass::add_force(Vector force){
 	// in calculate_force, which is called every 
 	// update.	
 
-	force.print();
-	this->force = force;
+	//this->force = force;
+	forces.push_back(force);
 }
 
 Vector PointMass::calculate_force(){
@@ -71,9 +69,12 @@ unsigned int PointMass::getPointCount() const {
 sf::Vector2f PointMass::getPoint(unsigned int index) const {
 	static const float pi = 3.141592654f;
 
-	float angle = index * 2 * pi / getPointCount() - pi / 2;
+	//float angle = index * 2 * pi / getPointCount() - pi / 2;
+	float angle = index * 2 * pi / getPointCount();
+	printf("%f\n", angle);
 	float x = std::cos(angle) * radius;
 	float y = std::sin(angle) * radius;
 
-	return sf::Vector2f(radius + x, radius + y);
+	return sf::Vector2f(x, y);
+	//return sf::Vector2f(0, 0);
 }
