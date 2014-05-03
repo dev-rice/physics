@@ -23,9 +23,9 @@ public:
 private:
 	std::vector<PointMass> points;
 
+	//static const double G = 0.0000000000667384; // For masses in kg
+	static const double G = 0.0000667384; // For masses in Gg
 	//static const double G = 1.0;
-	//static const double G = 0.0000000000667384;
-	static const double G = 1.0;
 
 };
 
