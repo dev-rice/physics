@@ -10,9 +10,10 @@ Vector GravityHandler::calculate_gravity_vector(PointMass a, PointMass b){
 	Vector direction = get_direction_vector(a, b);
 
 	double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
-	double F = (G * a.get_mass() * b.get_mass()) / r_squared;
-
-	F = 1.0;
+	//double F = (G * a.get_mass() * b.get_mass()) / r_squared;
+	double F = (G * a.get_mass() * b.get_mass());
+	
+	//F = 1.0;
 	// Checks if the distance squared is 0
 	// If it is, the two points are essentially
 	// the same and will have no external force
@@ -29,14 +30,24 @@ Vector GravityHandler::get_direction_vector(PointMass a, PointMass b){
 }
 
 void GravityHandler::update(double dt){
-	if (points.size() == 2){
+	/*if (points.size() == 2){
 			Vector gravity = calculate_gravity_vector(points[0], points[1]);
 			points[0].add_force(gravity);
 			points[1].add_force(gravity * -1);
 
 			points[0].update(dt);
 			points[1].update(dt);
+	}*/
+	for (int i = 0; i < points.size(); ++i){
+		for (int j = 0; j < points.size(); ++j){
+			Vector gravity = calculate_gravity_vector(points[i], points[j]);
+			points[i].add_force(gravity);
+		}
 	}
+	for (int i = 0; i < points.size(); ++i){
+		points[i].update(dt);
+	}
+
 }
 
 void GravityHandler::print(){

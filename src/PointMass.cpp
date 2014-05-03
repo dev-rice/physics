@@ -38,7 +38,6 @@ void PointMass::add_force(Vector force){
 	// in calculate_force, which is called every 
 	// update.	
 
-	//this->force = force;
 	forces.push_back(force);
 }
 
@@ -71,10 +70,9 @@ sf::Vector2f PointMass::getPoint(unsigned int index) const {
 
 	//float angle = index * 2 * pi / getPointCount() - pi / 2;
 	float angle = index * 2 * pi / getPointCount();
-	printf("%f\n", angle);
+
 	float x = std::cos(angle) * radius;
 	float y = std::sin(angle) * radius;
 
 	return sf::Vector2f(x, y);
-	//return sf::Vector2f(0, 0);
 }
