@@ -21,6 +21,7 @@ public:
 
 	Vector get_velocity() {return velocity;}
 	Vector get_position() {return position;}
+	Vector get_force() {return force;}
 	
 	double get_mass(){return mass;}
 
@@ -32,6 +33,7 @@ private:
 	double mass;
 	Vector position;
 	Vector velocity;
+	Vector force;
 
 	// Still a point mass, radius
 	// is for SFML
