@@ -28,7 +28,7 @@ GravityHandler populate_gravity_handler(int size){
 	srand(time(NULL));
 	GravityHandler handler;
 
-	handler.add_point_mass(PointMass(300.0, 300.0, 0.0, 100.0));
+	handler.add_point_mass(PointMass(300.0, 300.0, 0.0, 10000.0));
 	
 	return handler;
 }
@@ -38,7 +38,7 @@ int main() {
 	bool mousePressed = false;
 
 	GravityHandler handler = populate_gravity_handler(1);	
-	double tick = 0.01;
+	double tick = 0.0001;
 
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 4;
@@ -55,14 +55,14 @@ int main() {
 				window.close();
 		}
 		
-		window.clear();
+		//window.clear();
 		
 		std::vector<PointMass> point_masses = handler.get_points();
 		for (int i = 0; i < point_masses.size(); ++i){
 			window.draw(point_masses[i]);
 		}
 		
-		/*if (handler.get_points().size() == 2){
+		if (handler.get_points().size() == 2){
 			Vector position = point_masses[1].get_position();
 			Vector direction = handler.get_direction_vector(point_masses[1], point_masses[0]);
 			sf::Vertex line[] = {
@@ -71,7 +71,7 @@ int main() {
 			};
 
 			window.draw(line, 2, sf::Lines);
-		}*/
+		}
 
 		window.display();
 
@@ -91,17 +91,17 @@ int main() {
 			int mouse_x = sf::Mouse::getPosition(window).x;
 			int mouse_y = sf::Mouse::getPosition(window).y;
 			if (mouse_x <= 600 && mouse_x > 0 && mouse_y <= 600 && mouse_y > 0){
-				//if (handler.get_points().size() < 2){
-				PointMass a(mouse_x, mouse_y, 0.0, 1.0);
+				if (handler.get_points().size() < 2){
+					PointMass a(mouse_x, mouse_y, 0.0, 1.0);
 
-				double vx = 0.0;
-				double vy = 500.0;
-				double vz = 0.0;
+					double vx = 0.0;
+					double vy = 5000.0;
+					double vz = 0.0;
 
-				a.set_velocity(Vector(vx, vy, vz));
+					a.set_velocity(Vector(vx, vy, vz));
 
-				handler.add_point_mass(a);
-				//}
+					handler.add_point_mass(a);
+				}
 			}
 		}
 		
