@@ -9,17 +9,16 @@ Vector GravityHandler::calculate_gravity_vector(PointMass a, PointMass b){
 	// This has some weird effect on the physics calculations
 	Vector direction = get_direction_vector(a, b);
 
-	double r = direction.magnitude();
-	//double F = (G * a.get_mass() * b.get_mass()) / r_squared;
-	double F = (G * a.get_mass() * b.get_mass());
+	double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
+	//double F = (G * a.get_mass() * b.get_mass());
+	double F = (G * a.get_mass() * b.get_mass()) / r_squared;
 	
-	//F = 1.0;
 	// Checks if the distance squared is 0
 	// If it is, the two points are essentially
 	// the same and will have no external force
 	// acting between them.
-	if (r != double(0)){
-		return direction * F;
+	if (r_squared != double(0)){
+		return direction.unit() * F;
 	} else {
 		return  Vector(0.0, 0.0, 0.0);
 	}

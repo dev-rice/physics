@@ -11,13 +11,14 @@
 int main() {
 
 	bool mousePressed = false;
-	double tick = 0.001;
+	double tick = 0.1;
 
+	srand(time(NULL));
 	GravityHandler handler;
-	handler.add_point_mass(PointMass(300.0, 300.0, 0.0, 10000.0));
+	handler.add_point_mass(PointMass(300.0, 300.0, 0.0, 100000000.0));
 	
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 4;
+	settings.antialiasingLevel = 16;
 
 	sf::RenderWindow window(sf::VideoMode(600, 600), "Gravity", sf::Style::Default, settings);
 
@@ -30,7 +31,7 @@ int main() {
 				window.close();
 		}
 		
-		window.clear();
+		//window.clear();
 		
 		std::vector<PointMass> point_masses = handler.get_points();
 		for (int i = 0; i < point_masses.size(); ++i){

@@ -36,6 +36,10 @@ struct Vector {
 		return Vector(this->x / dividend, this->y / dividend, this->z / dividend);
 	}	
 
+	Vector unit(){
+		return Vector(this->x / magnitude(), this->y / magnitude(), this->z / magnitude());
+	}
+
 	double magnitude(){
 		return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
 	}
