@@ -9,7 +9,7 @@ PointMass::PointMass(double x, double y, double z, double mass){
 	int g = rand() % 200 + 55;
 	int b = rand() % 200 + 55;
 
-	radius = log10(mass) + 3;
+	radius = log10(mass);
 
 	sf::CircleShape::setFillColor(sf::Color(r, g, b));
 	sf::Shape::setPosition(position.x, position.y);
