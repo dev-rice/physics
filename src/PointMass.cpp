@@ -5,12 +5,12 @@ PointMass::PointMass(double x, double y, double z, double mass){
 	position = Vector(x, y, z);
 
 
-	int r = rand() % 200 + 55;
-	int g = rand() % 200 + 55;
-	int b = rand() % 200 + 55;
+	int r = rand() % 155 + 100;
+	int g = rand() % 155 + 100;
+	int b = rand() % 155 + 100;
 
-	radius = log10(mass);
-
+	radius = log10(mass) - 4;
+	//radius = 2;
 	sf::CircleShape::setFillColor(sf::Color(r, g, b));
 	sf::Shape::setPosition(position.x, position.y);
 	sf::CircleShape::update();
