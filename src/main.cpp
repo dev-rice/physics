@@ -8,10 +8,11 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-const int WIDTH = 1600;
-const int HEIGHT = 900;
+const int WIDTH = 800;
+const int HEIGHT = 600;
 
 void make_solar_system(GravityHandler&);
+PointMass random_point();
 
 int main() {
 
@@ -25,7 +26,9 @@ int main() {
 	GravityHandler handler;
 	make_solar_system(handler);
 
-	double tick = 0.01;
+	for (int i = 0; i < 100; ++i){
+		handler.add_point_mass(random_point());
+	}
 
     while (window.isOpen()) {
 
@@ -45,8 +48,7 @@ int main() {
 
 		window.display();
 
-		handler.update(tick);
-		usleep(100000 * tick);	
+		handler.update();
 
     }
 
@@ -98,4 +100,12 @@ void make_solar_system(GravityHandler& handler){
 	PointMass sun(WIDTH / 2, HEIGHT / 2 , 0, sun_mass);
 	sun.setFillColor(sf::Color(255, 255, 255));
 	handler.add_point_mass(sun);
+
+	handler.set_time_multiplier(1);
+}
+
+PointMass random_point(){
+	PointMass a(rand() % WIDTH, rand() % HEIGHT, 0, pow(10, rand() % 6 + 1));
+	a.set_velocity(Vector(rand() % 2, rand() % 2, 0));
+	return a;
 }
