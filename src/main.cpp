@@ -10,7 +10,6 @@
 
 const int WIDTH = 1200;
 const int HEIGHT = 600;
-const int HEIGHT = 700;
 
 void make_solar_system(GravityHandler&);
 PointMass random_point();
