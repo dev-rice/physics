@@ -8,8 +8,8 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-const int WIDTH = 1366;
-const int HEIGHT = 700;
+const int WIDTH = 1200;
+const int HEIGHT = 600;
 
 void make_solar_system(GravityHandler&);
 PointMass random_point();
