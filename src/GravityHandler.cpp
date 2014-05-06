@@ -33,36 +33,43 @@ Vector GravityHandler::get_direction_vector(PointMass a, PointMass b){
 
 void GravityHandler::update(){
 
-	if (first_update){
+	/*if (first_update){
 		// If its the first update we need to
 		// set the basis for the physics timing.
-		last_time = time(0);
+		last_time = get_unix_time();
 		first_update = false;
-	}
-
+	}*/
 	// Scary Experimental physics tick stuff!
 	// Doesn't quite work yet.
 	// Find the time elapsed since the last physics
 	// tick and update all particles using this delta.
 	//double dt = get_unix_time() - last_time;
 	//printf("dt = %f\n", dt);
-	
-	// Multiply the dt by a time multiplier
-	// not recommended to use time_multiplier > 10
-	//dt = time_multiplier * dt;
 
 	double dt = time_multiplier * BASE_TICK;
 
 	// Calculate the force of gravity from each point
 	// a to every other point. This is unoptimized and
-	// makes a lot of extra calculations.
-	for (int i = 0; i < points.size(); ++i){
+	// makes a lot of extra calculations. O(n^2)
+	/*for (int i = 0; i < points.size(); ++i){
 		for (int j = 0; j < points.size(); ++j){
 			Vector gravity = calculate_gravity_vector(points[i], points[j]);
 			points[i].add_force(gravity);
 		}
-	}
+	}*/
 
+	// Optimized gravity calculations, only has to calculate the upper
+	// triangular matrx of the forces, instead of all of them. Savings 
+	// of over half the calculations! Still O(n^2), lower constant
+	for (int i = 0; i < points.size(); ++i){
+		for (int j = i + 1; j < points.size(); ++j){
+			Vector gravity = calculate_gravity_vector(points[i], points[j]);
+			points[i].add_force(gravity);
+			points[j].add_force(gravity * -1);
+
+		}
+	}
+	
 	// Update each point so that it can move and react
 	// to the forces applied.
 	for (int i = 0; i < points.size(); ++i){
@@ -70,7 +77,7 @@ void GravityHandler::update(){
 	}
 
 	// Set last update time to the current time
-	last_time = get_unix_time();
+	//last_time = get_unix_time();
 
 }
 

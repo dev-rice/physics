@@ -26,6 +26,10 @@ int main() {
 	GravityHandler handler;
 	make_solar_system(handler);
 
+	for (int i = 0; i < 75; ++i){
+		handler.add_point_mass(random_point());
+	}
+    
     while (window.isOpen()) {
 
 		sf::Event event;
@@ -45,7 +49,6 @@ int main() {
 		window.display();
 
 		handler.update();
-
     }
 
     return 0;
@@ -109,7 +112,7 @@ void make_solar_system(GravityHandler& handler){
 }
 
 PointMass random_point(){
-	PointMass a(rand() % WIDTH, rand() % HEIGHT, 0, 10);
+	PointMass a(rand() % (WIDTH - 600) + 300, rand() % (HEIGHT - 400) + 200, 0, 10);
 	a.set_velocity(Vector(0, 0.5, 0));
 	return a;
 }
