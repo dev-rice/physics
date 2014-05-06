@@ -8,8 +8,8 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+const int WIDTH = 1366;
+const int HEIGHT = 700;
 
 void make_solar_system(GravityHandler&);
 PointMass random_point();
@@ -25,10 +25,6 @@ int main() {
 
 	GravityHandler handler;
 	make_solar_system(handler);
-
-	for (int i = 0; i < 100; ++i){
-		handler.add_point_mass(random_point());
-	}
 
     while (window.isOpen()) {
 
@@ -67,7 +63,7 @@ void make_solar_system(GravityHandler& handler){
 	double venus_mass = 4.868 * pow(10, 6);
 	double venus_speed = 1.1667 * earth_speed;
 	double venus_distance = 72;
-	PointMass venus(WIDTH / 2 - venus_distance, HEIGHT / 2, 0, earth_mass);
+	PointMass venus(WIDTH / 2 - venus_distance, HEIGHT / 2, 0, venus_mass);
 	venus.setFillColor(sf::Color(250, 159, 55));
 	venus.set_velocity(Vector(0, venus_speed, 0));
 	handler.add_point_mass(venus);
@@ -75,7 +71,7 @@ void make_solar_system(GravityHandler& handler){
 	double mars_mass = 6.481 * pow(10, 5);
 	double mars_speed = 0.8 * earth_speed;
 	double mars_distance = 152;
-	PointMass mars(WIDTH / 2 - mars_distance, HEIGHT / 2, 0, earth_mass);
+	PointMass mars(WIDTH / 2 - mars_distance, HEIGHT / 2, 0, mars_mass);
 	mars.setFillColor(sf::Color(245, 78, 78));
 	mars.set_velocity(Vector(0, mars_speed, 0));
 	handler.add_point_mass(mars);
@@ -83,7 +79,7 @@ void make_solar_system(GravityHandler& handler){
 	double mercury_mass = 3.32 * pow(10, 5);
 	double mercury_speed = 1.577 * earth_speed;
 	double mercury_distance = 38.7;
-	PointMass mercury(WIDTH / 2 - mercury_distance, HEIGHT / 2, 0, earth_mass);
+	PointMass mercury(WIDTH / 2 - mercury_distance, HEIGHT / 2, 0, mercury_mass);
 	mercury.setFillColor(sf::Color(200, 200, 200));
 	mercury.set_velocity(Vector(0, mercury_speed, 0));
 	handler.add_point_mass(mercury);
@@ -91,7 +87,7 @@ void make_solar_system(GravityHandler& handler){
 	double jupiter_mass = 1.898 * pow(10, 9);
 	double jupiter_speed = 0.436 * earth_speed;
 	double jupiter_distance = 520;
-	PointMass jupiter(WIDTH / 2 - jupiter_distance, HEIGHT / 2, 0, earth_mass);
+	PointMass jupiter(WIDTH / 2 - jupiter_distance, HEIGHT / 2, 0, jupiter_mass);
 	jupiter.setFillColor(sf::Color(255, 150, 150));
 	jupiter.set_velocity(Vector(0, jupiter_speed, 0));
 	handler.add_point_mass(jupiter);
