@@ -10,7 +10,10 @@ PointMass::PointMass(double x, double y, double z, double mass){
 	int b = rand() % 155 + 100;
 
 	radius = log10(mass) - 4;
-	//radius = 2;
+	if (radius < 1){
+		radius = 1;
+	}
+
 	sf::CircleShape::setFillColor(sf::Color(r, g, b));
 	sf::Shape::setPosition(position.x, position.y);
 	sf::CircleShape::update();
@@ -67,12 +70,10 @@ unsigned int PointMass::getPointCount() const {
 
 sf::Vector2f PointMass::getPoint(unsigned int index) const {
 	static const float pi = 3.141592654f;
-
-	//float angle = index * 2 * pi / getPointCount() - pi / 2;
 	float angle = index * 2 * pi / getPointCount();
 
 	float x = std::cos(angle) * radius;
 	float y = std::sin(angle) * radius;
 
-	return sf::Vector2f(x, y);
+	return sf::Vector2f(x, y);	
 }
