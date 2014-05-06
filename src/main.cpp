@@ -9,11 +9,8 @@
 #include <SFML/Graphics.hpp>
 
 const int WIDTH = 1200;
-<<<<<<< HEAD
 const int HEIGHT = 600;
-=======
 const int HEIGHT = 700;
->>>>>>> f554c03c762f1254e930636b2b6834c090aae495
 
 void make_solar_system(GravityHandler&);
 PointMass random_point();
