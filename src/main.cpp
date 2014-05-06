@@ -9,7 +9,11 @@
 #include <SFML/Graphics.hpp>
 
 const int WIDTH = 1200;
+<<<<<<< HEAD
 const int HEIGHT = 600;
+=======
+const int HEIGHT = 700;
+>>>>>>> f554c03c762f1254e930636b2b6834c090aae495
 
 void make_solar_system(GravityHandler&);
 PointMass random_point();
@@ -19,7 +23,7 @@ int main() {
 	srand(time(NULL));
 	
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 16;
+	settings.antialiasingLevel = 8;
 
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::Default, settings);
 
@@ -92,16 +96,24 @@ void make_solar_system(GravityHandler& handler){
 	jupiter.set_velocity(Vector(0, jupiter_speed, 0));
 	handler.add_point_mass(jupiter);
 
+	double io_mass = 2.2 * pow(10, 4);
+	double io_speed = 0.578 * earth_speed;
+	double io_distance = 514;
+	PointMass io(WIDTH / 2 - io_distance, HEIGHT / 2, 0, io_mass);
+	io.setFillColor(sf::Color(100, 150, 150));
+	io.set_velocity(Vector(0, io_speed, 0));
+	handler.add_point_mass(io);
+
 	double sun_mass = 1.989 * pow(10, 12);
 	PointMass sun(WIDTH / 2, HEIGHT / 2 , 0, sun_mass);
-	sun.setFillColor(sf::Color(255, 255, 255));
+	sun.setFillColor(sf::Color(255, 255, 177));
 	handler.add_point_mass(sun);
 
 	handler.set_time_multiplier(1);
 }
 
 PointMass random_point(){
-	PointMass a(rand() % WIDTH, rand() % HEIGHT, 0, pow(10, rand() % 6 + 1));
-	a.set_velocity(Vector(rand() % 2, rand() % 2, 0));
+	PointMass a(rand() % WIDTH, rand() % HEIGHT, 0, 10);
+	a.set_velocity(Vector(0, 0.5, 0));
 	return a;
 }

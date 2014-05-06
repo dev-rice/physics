@@ -32,7 +32,7 @@ private:
 
 	bool first_update;
 	double last_time;
-	int time_multiplier;
+	double time_multiplier;
 	static const double BASE_TICK = 1.0; // Set base tick speed to 1 second
 
 };
