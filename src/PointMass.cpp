@@ -48,11 +48,13 @@ void PointMass::print(){
 	printf("x = %f, y = %f, z = %f, mass = %f\n", position.x, position.y, position.z, mass);
 }
 
-void combine(PointMass to_combine){
+void PointMass::combine(PointMass to_combine){
 	// Combines this PointMass and to_combine
-	// 	by summing masses, and velocities
+	// 	by summing masses and velocities
 	// Should also update the circle shape
 	// 	because radius may have changed.
+	mass = mass + to_combine.get_mass();
+	velocity = velocity + to_combine.get_velocity();
 }
 
 Vector PointMass::sum_forces(){

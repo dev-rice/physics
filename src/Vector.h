@@ -34,6 +34,10 @@ struct Vector {
 
 	Vector operator /(const double dividend) const {
 		return Vector(this->x / dividend, this->y / dividend, this->z / dividend);
+	}
+
+	bool operator ==(const Vector a) const {
+		return (x == a.x) && (y == a.y) && (z == a.z);
 	}	
 
 	Vector unit(){
