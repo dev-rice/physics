@@ -8,8 +8,8 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-const int WIDTH = 1920;
-const int HEIGHT = 1080;
+const int WIDTH = 1600;
+const int HEIGHT = 900;
 
 void make_solar_system(GravityHandler&);
 PointMass random_point();
@@ -21,12 +21,12 @@ int main() {
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
 
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::Fullscreen, settings);
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::Default, settings);
 
 	GravityHandler handler;
 	make_solar_system(handler);
 
-	for (int i = 0; i < 75; ++i){
+	for (int i = 0; i < 20; ++i){
 		PointMass a(rand() % 500 + 200, rand() % 500 + 200, 0, pow(10,8));
 		a.set_velocity(Vector(0, 0.25, 0));
 		handler.add_point_mass(a);
@@ -109,7 +109,7 @@ void make_solar_system(GravityHandler& handler){
 	io.set_velocity(Vector(0, io_speed, 0));
 	handler.add_point_mass(io);
 
-	/*for (int i = 0; i < 50; ++i){
+	for (int i = 0; i < 50; ++i){
 		double asteroid_mass = pow(10,2);
 		double asteroid_speed = 0.9 * earth_speed;
 		double asteroid_distance = 120 + double(i) / 5.0;
@@ -117,7 +117,7 @@ void make_solar_system(GravityHandler& handler){
 		asteroid.setFillColor(sf::Color(100, 150, 150));
 		asteroid.set_velocity(Vector(0, asteroid_speed, 0));
 		handler.add_point_mass(asteroid);
-	}*/
+	}
 
 	double sun_mass = 1.989 * pow(10, 12);
 	PointMass sun(WIDTH / 2, HEIGHT / 2 , 0, sun_mass);
