@@ -50,11 +50,10 @@ void PointMass::print(){
 
 void PointMass::combine(PointMass to_combine){
 	// Combines this PointMass and to_combine
-	// 	by summing masses and velocities
+	// 	by summing masses
 	// Should also update the circle shape
 	// 	because radius may have changed.
 	mass = mass + to_combine.get_mass();
-	velocity = velocity + to_combine.get_velocity();
 }
 
 Vector PointMass::sum_forces(){

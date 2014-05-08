@@ -1,23 +1,16 @@
 #include "GravityHandler.h"
 
 GravityHandler::GravityHandler(){
-	first_update = true;
-	time_multiplier = 1;
+	dt = BASE_TICK;
 }
 
-Vector GravityHandler::calculate_gravity_vector(PointMass a, PointMass b){
+Vector GravityHandler::calculate_gravity_vector(PointMass& a, PointMass& b){
 	// Takes two point masses a and b and finds the gravity
 	// force vector of a, influenced by b.
 	// F = (G M1 M2) / r ^ 2
 
 	Vector direction = get_direction_vector(a, b);
-
-	double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
-
-	if (r_squared <= 0.5){
-		printf("Combining points\n");
-	}
-	
+	double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);	
 	double F = (G * a.get_mass() * b.get_mass()) / r_squared;
 
 	// Use unit vector for real physics!
@@ -30,9 +23,6 @@ Vector GravityHandler::get_direction_vector(PointMass a, PointMass b){
 }
 
 void GravityHandler::update(){
-
-	double dt = time_multiplier * BASE_TICK;
-
 	// Optimized gravity calculations, only has to calculate the upper
 	// triangular matrx of the forces, instead of all of them. Savings 
 	// of over half the calculations! Still O(n^2), lower constant
@@ -42,14 +32,9 @@ void GravityHandler::update(){
 			points[i].add_force(gravity);
 			points[j].add_force(gravity * -1);
 		}
-	}
-	
-	// Update each point so that it can move and react
-	// to the forces applied.
-	for (int i = 0; i < points.size(); ++i){
 		points[i].update(dt);
 	}
-
+	
 }
 
 void GravityHandler::print(){

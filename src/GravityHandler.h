@@ -12,12 +12,12 @@ class GravityHandler {
 public:
 	GravityHandler();
 
-	Vector calculate_gravity_vector(PointMass, PointMass);
+	Vector calculate_gravity_vector(PointMass&, PointMass&);
 
 	void update();
 	void add_point_mass(PointMass a) {points.push_back(a);}
 	void print();
-	void set_time_multiplier(double time_multiplier) {this->time_multiplier = time_multiplier;}
+	void set_time_multiplier(double time_multiplier) {dt = time_multiplier * BASE_TICK;}
 
 	std::vector<PointMass>& get_points(){return points;}
 	double get_unix_time();
@@ -31,7 +31,7 @@ private:
 	static const double G = 0.0000000000667384;
 
 	bool first_update;
-	double last_time;
+	double dt;
 	double time_multiplier;
 	static const double BASE_TICK = 1.0; // Set base tick speed to 1 second
 
