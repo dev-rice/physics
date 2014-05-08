@@ -22,7 +22,7 @@ PointMass::PointMass(double x, double y, double z, double mass){
 void PointMass::update(double dt){
 	// Sum up all of the force Vectors
 	// to get a resulting force Vector
-	force = calculate_force();
+	force = sum_forces();
 	Vector acceleration = force / mass;
 
 	velocity = velocity + (acceleration * dt);
@@ -38,17 +38,24 @@ void PointMass::update(double dt){
 void PointMass::add_force(Vector force){
 	// Add a force to the point. The sum of
 	// The force vectors will be calculated
-	// in calculate_force, which is called every 
+	// in sum_forces, which is called every 
 	// update.	
 
 	forces.push_back(force);
 }
 
-Vector PointMass::calculate_force(){
-	// As of now, point masses can only have one
-	// force acting on them at a time. Apply force
-	// just overrides any current force and makes
-	// a new one
+void PointMass::print(){
+	printf("x = %f, y = %f, z = %f, mass = %f\n", position.x, position.y, position.z, mass);
+}
+
+void combine(PointMass to_combine){
+	// Combines this PointMass and to_combine
+	// 	by summing masses, and velocities
+	// Should also update the circle shape
+	// 	because radius may have changed.
+}
+
+Vector PointMass::sum_forces(){
 	Vector force;
 
 	for (int i = 0; i < forces.size(); ++i){
@@ -58,14 +65,9 @@ Vector PointMass::calculate_force(){
 	return force;
 }
 
-
-void PointMass::print(){
-	printf("x = %f, y = %f, z = %f, mass = %f\n", position.x, position.y, position.z, mass);
-}
-
 // SFML overrides
 unsigned int PointMass::getPointCount() const {
-	return 100; // fixed, but could be an attribute of the class if needed
+	return 100;
 }
 
 sf::Vector2f PointMass::getPoint(unsigned int index) const {

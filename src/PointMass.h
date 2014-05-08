@@ -12,13 +12,12 @@ public:
 	PointMass(double, double, double, double);
 
 	void update (double);
-
 	void set_velocity(Vector velocity) {this->velocity = velocity;}
 	void add_force(Vector);
-	Vector calculate_force();
-
+	void combine(PointMass);
 	void print();
 
+	Vector sum_forces();
 	Vector get_velocity() {return velocity;}
 	Vector get_position() {return position;}
 	Vector get_force() {return force;}
