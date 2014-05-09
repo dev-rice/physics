@@ -17,6 +17,7 @@ const int SENSITIVITY = 6;
 void populate_handler(GravityHandler&);
 Body random_body();
 double fRand(double, double);
+void make_solar_system(GravityHandler&);
 
 int main() {
 
@@ -36,11 +37,10 @@ int main() {
 
     while (window.isOpen()) {
 
-
-
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
     		window.close();
 		}
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 			drawer.move(-SENSITIVITY, 0);
 		} 
@@ -56,6 +56,10 @@ int main() {
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
 			handler.clear();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+			handler.clear();
+			populate_handler(handler);
 		}
 
 		if (!dragging && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -116,11 +120,60 @@ Body random_body(){
 }
 
 void populate_handler(GravityHandler& handler){
-	Body a(Vector(200, 200, 0), pow(10, 12));
-	handler.add_body(a);
+	// Body a(Vector(200, 200, 0), pow(10, 12));
+	// handler.add_body(a);
 
 	// for (int i = 0; i < 200; ++i){
 	// 	handler.add_body(random_body());
 	// }
 
+	make_solar_system(handler);
+}
+
+void make_solar_system(GravityHandler& handler){
+	double earth_mass = 5.972 * pow(10, 6);
+	double earth_speed = 1.15;
+	double earth_distance = 100;
+	Body earth(Vector(WIDTH / 2 - earth_distance, HEIGHT / 2, 0), earth_mass);
+	earth.set_velocity(Vector(0, earth_speed, 0));
+	handler.add_body(earth);
+
+	double venus_mass = 4.868 * pow(10, 6);
+	double venus_speed = 1.1667 * earth_speed;
+	double venus_distance = 72;
+	Body venus(Vector(WIDTH / 2 - venus_distance, HEIGHT / 2, 0), venus_mass);
+	venus.set_velocity(Vector(0, venus_speed, 0));
+	handler.add_body(venus);
+
+	double mars_mass = 6.481 * pow(10, 5);
+	double mars_speed = 0.8 * earth_speed;
+	double mars_distance = 152;
+	Body mars(Vector(WIDTH / 2 - mars_distance, HEIGHT / 2, 0), mars_mass);
+	mars.set_velocity(Vector(0, mars_speed, 0));
+	handler.add_body(mars);
+
+	double mercury_mass = 3.32 * pow(10, 5);
+	double mercury_speed = 1.577 * earth_speed;
+	double mercury_distance = 38.7;
+	Body mercury(Vector(WIDTH / 2 - mercury_distance, HEIGHT / 2, 0), mercury_mass);
+	mercury.set_velocity(Vector(0, mercury_speed, 0));
+	handler.add_body(mercury);
+
+	double jupiter_mass = 1.898 * pow(10, 9);
+	double jupiter_speed = 0.436 * earth_speed;
+	double jupiter_distance = 520;
+	Body jupiter(Vector(WIDTH / 2 - jupiter_distance, HEIGHT / 2, 0), jupiter_mass);
+	jupiter.set_velocity(Vector(0, jupiter_speed, 0));
+	handler.add_body(jupiter);
+
+	double io_mass = 2.2 * pow(10, 4);
+	double io_speed = 0.578 * earth_speed;
+	double io_distance = 514;
+	Body io(Vector(WIDTH / 2 - io_distance, HEIGHT / 2, 0), io_mass);
+	io.set_velocity(Vector(0, io_speed, 0));
+	handler.add_body(io);
+
+	double sun_mass = 1.989 * pow(10, 12);
+	Body sun(Vector(WIDTH / 2, HEIGHT / 2 , 0), sun_mass);
+	handler.add_body(sun);
 }
