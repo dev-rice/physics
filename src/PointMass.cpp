@@ -1,8 +1,8 @@
 #include "PointMass.h"
 
-PointMass::PointMass(double x, double y, double z, double mass){	
+PointMass::PointMass(Vector position, double mass){	
 	this->mass = mass;
-	position = Vector(x, y, z);
+	this->position = position;
 }
 
 void PointMass::update(double dt){

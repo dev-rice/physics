@@ -9,7 +9,7 @@
 
 class PointMass {
 public:
-	PointMass(double, double, double, double);
+	PointMass(Vector, double);
 
 	void update (double);
 	void set_velocity(Vector velocity) {this->velocity = velocity;}
@@ -24,7 +24,7 @@ public:
 	
 	double get_mass(){return mass;}
 
-private:
+protected:
 	double mass;
 	Vector position;
 	Vector velocity;

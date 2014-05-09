@@ -1,4 +1,5 @@
 #include "PointMass.h"
+#include "Body.h"
 #include "Vector.h"
 #include <vector>
 #include <stdio.h>
@@ -12,27 +13,26 @@ class GravityHandler {
 public:
 	GravityHandler();
 
-	Vector calculate_gravity_vector(PointMass&, PointMass&);
+	Vector calculate_gravity_vector(Body, Body);
 
 	void update();
-	void add_point_mass(PointMass a) {points.push_back(a);}
+	void add_body(Body a) {bodies.push_back(a);}
 	void print();
 	void set_time_multiplier(double time_multiplier) {dt = time_multiplier * BASE_TICK;}
 
-	std::vector<PointMass>& get_points(){return points;}
+	std::vector<Body>& get_bodies(){return bodies;}
 	double get_unix_time();
 
 private:
 
-	Vector get_direction_vector(PointMass, PointMass);
+	Vector get_direction_vector(Body, Body);
 
-	std::vector<PointMass> points;
+	std::vector<Body> bodies;
 
-	static const double G = 0.0000000000667384;
-
-	bool first_update;
+	double G;
 	double dt;
 	double time_multiplier;
+
 	static const double BASE_TICK = 1.0; // Set base tick speed to 1 second
 
 };

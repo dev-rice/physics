@@ -2,9 +2,10 @@
 
 GravityHandler::GravityHandler(){
 	dt = BASE_TICK;
+	G = 6.67384 * pow(10, -11);
 }
 
-Vector GravityHandler::calculate_gravity_vector(PointMass& a, PointMass& b){
+Vector GravityHandler::calculate_gravity_vector(Body a, Body b){
 	// Takes two point masses a and b and finds the gravity
 	// force vector of a, influenced by b.
 	// F = (G M1 M2) / r ^ 2
@@ -18,7 +19,7 @@ Vector GravityHandler::calculate_gravity_vector(PointMass& a, PointMass& b){
 	return force;
 }
 
-Vector GravityHandler::get_direction_vector(PointMass a, PointMass b){
+Vector GravityHandler::get_direction_vector(Body a, Body b){
 	return b.get_position() - a.get_position();
 }
 
@@ -26,20 +27,20 @@ void GravityHandler::update(){
 	// Optimized gravity calculations, only has to calculate the upper
 	// triangular matrx of the forces, instead of all of them. Savings 
 	// of over half the calculations! Still O(n^2), lower constant
-	for (int i = 0; i < points.size(); ++i){
-		for (int j = i + 1; j < points.size(); ++j){
-			Vector gravity = calculate_gravity_vector(points[i], points[j]);
-			points[i].add_force(gravity);
-			points[j].add_force(gravity * -1);
+	for (int i = 0; i < bodies.size(); ++i){
+		for (int j = i + 1; j < bodies.size(); ++j){
+			Vector gravity = calculate_gravity_vector(bodies[i], bodies[j]);
+			bodies[i].add_force(gravity);
+			bodies[j].add_force(gravity * -1);
 		}
-		points[i].update(dt);
+		bodies[i].update(dt);
 	}
 	
 }
 
 void GravityHandler::print(){
-	for (int i = 0; i < points.size(); ++i){
-		points[i].print();
+	for (int i = 0; i < bodies.size(); ++i){
+		bodies[i].print();
 	}
 }
 
