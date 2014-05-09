@@ -15,6 +15,7 @@ void DrawingHandler::draw(sf::RenderWindow& window, GravityHandler& handler) {
 		sf::CircleShape shape(body.get_radius());
 		shape.setPosition(body.get_position().x - x, body.get_position().y - y);
 		shape.setFillColor(sf::Color(body.get_r(), body.get_g(), body.get_b()));
+		
 		window.draw(shape);
 	}
 

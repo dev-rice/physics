@@ -35,9 +35,21 @@ void PointMass::print(){
 void PointMass::combine(PointMass to_combine){
 	// Combines this PointMass and to_combine
 	// 	by summing masses
-	// Should also update the circle shape
-	// 	because radius may have changed.
+	double initial_mass = mass;
+
 	mass = mass + to_combine.get_mass();
+
+	printf("initial mass = %f, combined mass = %f\n", initial_mass, mass);
+
+	// Conservation of momentum
+	// p1 = m2 * v2
+	// p1 = ma * va + mb * vb
+	// v2 = (ma * va + mb * vb) / m2
+	velocity.print();
+
+	velocity = (velocity * initial_mass + to_combine.get_velocity() * to_combine.get_mass()) / mass;
+
+	velocity.print();
 }
 
 Vector PointMass::sum_forces(){

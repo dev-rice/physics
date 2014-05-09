@@ -27,13 +27,25 @@ void GravityHandler::update(){
 	// Optimized gravity calculations, only has to calculate the upper
 	// triangular matrx of the forces, instead of all of them. Savings 
 	// of over half the calculations! Still O(n^2), lower constant
+	std::vector<int> to_remove;
+
 	for (int i = 0; i < bodies.size(); ++i){
 		for (int j = i + 1; j < bodies.size(); ++j){
-			Vector gravity = calculate_gravity_vector(bodies[i], bodies[j]);
-			bodies[i].add_force(gravity);
-			bodies[j].add_force(gravity * -1);
+			if (bodies[i].is_colliding(bodies[j])){
+				bodies[i].combine(bodies[j]);
+				to_remove.push_back(j);
+			} else {
+				Vector gravity = calculate_gravity_vector(bodies[i], bodies[j]);
+				bodies[i].add_force(gravity);
+				bodies[j].add_force(gravity * -1);	
+			}	
 		}
 		bodies[i].update(dt);
+	}
+
+	for (int i = 0; i < to_remove.size(); ++i){
+		printf("removing %d\n", to_remove[i]);
+		bodies.erase(bodies.begin() + to_remove[i]);
 	}
 	
 }
