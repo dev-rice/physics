@@ -7,7 +7,7 @@
 #ifndef Point_h
 #define Point_h
 
-class PointMass : public sf::CircleShape {
+class PointMass {
 public:
 	PointMass(double, double, double, double);
 
@@ -24,19 +24,11 @@ public:
 	
 	double get_mass(){return mass;}
 
-	// SFML overrides
-	virtual unsigned int getPointCount() const;
-    virtual sf::Vector2f getPoint(unsigned int index) const;
-
 private:
 	double mass;
 	Vector position;
 	Vector velocity;
 	Vector force;
-
-	// Still a point mass, radius
-	// is for SFML
-	int radius;
 
 	std::vector<Vector> forces;
 };

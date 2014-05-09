@@ -24,13 +24,18 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::Default, settings);
 
 	GravityHandler handler;
-	make_solar_system(handler);
 
-	for (int i = 0; i < 20; ++i){
-		PointMass a(rand() % 500 + 200, rand() % 500 + 200, 0, pow(10,8));
-		a.set_velocity(Vector(0, 0.25, 0));
-		handler.add_point_mass(a);
-	}
+	PointMass a(500, 500, 0, pow(10, 9));
+	a.set_velocity(Vector(0, .01, 0));
+	PointMass b(600, 500, 0, pow(10, 9));
+	b.set_velocity(Vector(0, -.03, 0));
+
+
+	handler.add_point_mass(a);
+	handler.add_point_mass(b);
+	handler.set_time_multiplier(0.1);
+
+	std::vector<sf::CircleShape> shapes;
 
     while (window.isOpen()) {
 
@@ -46,10 +51,14 @@ int main() {
 		}
 		
 		window.clear();
-		
-		std::vector<PointMass> point_masses = handler.get_points();
-		for (int i = 0; i < point_masses.size(); ++i){
-			window.draw(point_masses[i]);
+
+		std::vector<PointMass> points = handler.get_points();
+		for (int i = 0; i < points.size(); ++i){
+			Vector position = points[i].get_position();
+
+			sf::CircleShape shape(2);
+			shape.setPosition(position.x, position.y);
+			window.draw(shape);
 		}
 
 		window.display();
@@ -58,71 +67,4 @@ int main() {
     }
 
     return 0;
-}
-
-void make_solar_system(GravityHandler& handler){
-	double earth_mass = 5.972 * pow(10, 6);
-	double earth_speed = 1.15;
-	double earth_distance = 100;
-	PointMass earth(WIDTH / 2 - earth_distance, HEIGHT / 2, 0, earth_mass);
-	earth.setFillColor(sf::Color(55, 159, 250));
-	earth.set_velocity(Vector(0, earth_speed, 0));
-	handler.add_point_mass(earth);
-
-	double venus_mass = 4.868 * pow(10, 6);
-	double venus_speed = 1.1667 * earth_speed;
-	double venus_distance = 72;
-	PointMass venus(WIDTH / 2 - venus_distance, HEIGHT / 2, 0, venus_mass);
-	venus.setFillColor(sf::Color(250, 159, 55));
-	venus.set_velocity(Vector(0, venus_speed, 0));
-	handler.add_point_mass(venus);
-
-	double mars_mass = 6.481 * pow(10, 5);
-	double mars_speed = 0.8 * earth_speed;
-	double mars_distance = 152;
-	PointMass mars(WIDTH / 2 - mars_distance, HEIGHT / 2, 0, mars_mass);
-	mars.setFillColor(sf::Color(245, 78, 78));
-	mars.set_velocity(Vector(0, mars_speed, 0));
-	handler.add_point_mass(mars);
-
-	double mercury_mass = 3.32 * pow(10, 5);
-	double mercury_speed = 1.577 * earth_speed;
-	double mercury_distance = 38.7;
-	PointMass mercury(WIDTH / 2 - mercury_distance, HEIGHT / 2, 0, mercury_mass);
-	mercury.setFillColor(sf::Color(200, 200, 200));
-	mercury.set_velocity(Vector(0, mercury_speed, 0));
-	handler.add_point_mass(mercury);
-
-	double jupiter_mass = 1.898 * pow(10, 9);
-	double jupiter_speed = 0.436 * earth_speed;
-	double jupiter_distance = 520;
-	PointMass jupiter(WIDTH / 2 - jupiter_distance, HEIGHT / 2, 0, jupiter_mass);
-	jupiter.setFillColor(sf::Color(255, 150, 150));
-	jupiter.set_velocity(Vector(0, jupiter_speed, 0));
-	handler.add_point_mass(jupiter);
-
-	double io_mass = 2.2 * pow(10, 4);
-	double io_speed = 0.578 * earth_speed;
-	double io_distance = 514;
-	PointMass io(WIDTH / 2 - io_distance, HEIGHT / 2, 0, io_mass);
-	io.setFillColor(sf::Color(100, 150, 150));
-	io.set_velocity(Vector(0, io_speed, 0));
-	handler.add_point_mass(io);
-
-	for (int i = 0; i < 50; ++i){
-		double asteroid_mass = pow(10,2);
-		double asteroid_speed = 0.9 * earth_speed;
-		double asteroid_distance = 120 + double(i) / 5.0;
-		PointMass asteroid(WIDTH / 2 - asteroid_distance, HEIGHT / 2, 0, asteroid_mass);
-		asteroid.setFillColor(sf::Color(100, 150, 150));
-		asteroid.set_velocity(Vector(0, asteroid_speed, 0));
-		handler.add_point_mass(asteroid);
-	}
-
-	double sun_mass = 1.989 * pow(10, 12);
-	PointMass sun(WIDTH / 2, HEIGHT / 2 , 0, sun_mass);
-	sun.setFillColor(sf::Color(255, 255, 177));
-	handler.add_point_mass(sun);
-
-	handler.set_time_multiplier(10);
 }
