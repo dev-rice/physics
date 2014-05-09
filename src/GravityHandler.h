@@ -20,6 +20,7 @@ public:
 	void add_body(Body a) {bodies.push_back(a);}
 	void print();
 	void set_time_multiplier(double time_multiplier) {dt = time_multiplier * BASE_TICK;}
+	void clear() {bodies.clear();}
 
 	std::vector<Body>& get_bodies(){return bodies;}
 	double get_unix_time();

@@ -10,7 +10,7 @@ Body::Body(Vector position, double mass) : PointMass(position, mass) {
 }
 
 bool Body::is_colliding(Body a){
-	return (position - a.get_position()).magnitude() < radius - a.get_radius();
+	return (position - a.get_position()).magnitude() < radius;
 }
 
 void Body::combine(Body a){
