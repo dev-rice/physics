@@ -27,15 +27,15 @@ void GravityHandler::update(){
 	// Optimized gravity calculations, only has to calculate the upper
 	// triangular matrx of the forces, instead of all of them. Savings 
 	// of over half the calculations! Still O(n^2), lower constant
-	std::set<int> to_remove;
+	std::set<Body*> to_remove_bodies;
 
 	for (int i = 0; i < bodies.size(); ++i){
 		for (int j = i + 1; j < bodies.size(); ++j){
 			if (bodies[i].is_colliding(bodies[j])){
-				// If there is a collision, combine the bodies and tell
-				// the program to remove the body at j.
+				// If there is a collision, combine the bodies and add
+				// the reference of the offending body to be removed.
 				bodies[i].combine(bodies[j]);
-				to_remove.insert(j);
+				to_remove_bodies.insert(&bodies[j]);
 			} else {
 				// Otherwise, just calculate gravity 
 				Vector gravity = calculate_gravity_vector(bodies[i], bodies[j]);
@@ -46,10 +46,14 @@ void GravityHandler::update(){
 		bodies[i].update(dt);
 	}
 
-	// Remove each item in the to_remove set from bodies.
-	std::set<int>::iterator it;
-	for (it = to_remove.begin(); it != to_remove.end(); ++it){
-		bodies.erase(bodies.begin() + *it);
+	// Removes the specified bodies from the vector bodies.
+	std::set<Body*>::iterator it;
+	for (it = to_remove_bodies.begin(); it != to_remove_bodies.end(); ++it){
+		for (int i = 0; i < bodies.size(); ++i){
+			if (*it == &bodies[i]){
+				bodies.erase(bodies.begin() + i);
+			}
+		}
 	}
 	
 }

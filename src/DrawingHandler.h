@@ -4,7 +4,7 @@
 
 class DrawingHandler {
 public:
-	DrawingHandler() {x = 0, y = 0;}
+	DrawingHandler();
 	DrawingHandler(double, double);
 
 	void draw(sf::RenderWindow&, GravityHandler&);
@@ -12,4 +12,7 @@ public:
 
 private:
 	double x, y;
+	
+	sf::Font font;
+
 };
