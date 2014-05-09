@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <cmath>
 #include <time.h>
+#include <set>
 
 #ifndef GravityHandler_h
 #define GravityHandler_h
