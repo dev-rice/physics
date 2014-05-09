@@ -4,9 +4,9 @@ Body::Body(Vector position, double mass) : PointMass(position, mass) {
 	//srand(time(NULL));
 	update_radius();
 	
-	r = rand() % 255;
-	g = rand() % 255;
-	b = rand() % 255;
+	r = rand() % 200 + 55;
+	g = rand() % 200 + 55;
+	b = rand() % 200 + 55;
 }
 
 bool Body::is_colliding(Body a){
@@ -14,8 +14,15 @@ bool Body::is_colliding(Body a){
 }
 
 void Body::combine(Body a){
+	if (mass < a.get_mass()) {
+		r = a.get_r();
+		g = a.get_g();
+		b = a.get_b();
+	}
+
 	PointMass::combine(a);
 	update_radius();
+
 }
 
 void Body::update_radius(){
