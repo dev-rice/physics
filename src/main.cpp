@@ -38,8 +38,6 @@ int main() {
 	bool dragging = false;
 	sf::Vector2i origin;
 
-	bool paused = false;
-
     while (window.isOpen()) {
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
@@ -77,13 +75,6 @@ int main() {
 			drawer.set_position(0, 0);
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-			paused = !paused;
-		} 
-
-
-		window.clear();
-
 		if (!dragging && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     		dragging = true;
     		origin = sf::Mouse::getPosition(window);
@@ -102,7 +93,7 @@ int main() {
 			dragging = false;
 		}
 
-		//window.clear();
+		window.clear();
 		drawer.draw(window, handler);
 
 		if (dragging) {
@@ -115,10 +106,7 @@ int main() {
 			window.draw(line, 2, sf::Lines);
 		}
 
-		if (!paused){
-			handler.update();
-		}
-
+		handler.update();
 		window.display();
     }
 
