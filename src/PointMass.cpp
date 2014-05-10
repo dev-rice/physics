@@ -18,7 +18,6 @@ void PointMass::update(double dt){
 	forces.clear();
 }
 
-
 void PointMass::add_force(Vector force){
 	// Add a force to the point. The sum of
 	// The force vectors will be calculated

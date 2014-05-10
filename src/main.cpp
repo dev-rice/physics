@@ -10,8 +10,8 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-const int WIDTH = 1920;
-const int HEIGHT = 1080;
+const int WIDTH = 1200;
+const int HEIGHT = 700;
 const int SENSITIVITY = 6;
 
 void populate_handler(GravityHandler&);
@@ -23,7 +23,7 @@ int main() {
 
 	srand(time(NULL));
 
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
 	DrawingHandler drawer;
@@ -34,6 +34,8 @@ int main() {
 	
 	bool dragging = false;
 	sf::Vector2i origin;
+
+	bool paused = false;
 
     while (window.isOpen()) {
 
@@ -56,26 +58,31 @@ int main() {
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
 			handler.clear();
+			window.clear();
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
 			handler.clear();
+			window.clear();
 			populate_handler(handler);
 		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			paused = !paused;
+		}
+
+
+
 		if (!dragging && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-    		//Vector position = Vector(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y, 0);
-    		// position = position + Vector(drawer.get_x(), drawer.get_y(), 0);
-    		// handler.add_body(Body(position, pow(10, 5)));
     		dragging = true;
-    		origin = sf::Mouse::getPosition();
+    		origin = sf::Mouse::getPosition(window);
 		} else if (dragging && !sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			sf::Vector2i current_position = sf::Mouse::getPosition();
+			sf::Vector2i current_position = sf::Mouse::getPosition(window);
 
 			Vector position = Vector(origin.x, origin.y, 0) + Vector(drawer.get_x(), drawer.get_y(), 0);
 			Vector velocity = Vector(current_position.x, current_position.y, 0) - Vector(origin.x, origin.y, 0);
 			velocity = velocity / 50;
 
-			Body a(position, pow(10, 6));
+			Body a(position, pow(10, 10));
 			a.set_velocity(velocity);
 
 			handler.add_body(a);
@@ -87,7 +94,7 @@ int main() {
 		drawer.draw(window, handler);
 
 		if (dragging) {
-			sf::Vector2i current_position = sf::Mouse::getPosition();
+			sf::Vector2i current_position = sf::Mouse::getPosition(window);
 			sf::Vertex line[] = {
 			    sf::Vertex(sf::Vector2f(origin.x, origin.y)),
 			    sf::Vertex(sf::Vector2f(current_position.x, current_position.y))
@@ -96,7 +103,10 @@ int main() {
 			window.draw(line, 2, sf::Lines);
 		}
 
-		handler.update();
+		if (!paused){
+			handler.update();
+		}
+
 		window.display();
     }
 
@@ -120,13 +130,10 @@ Body random_body(){
 }
 
 void populate_handler(GravityHandler& handler){
-	// Body a(Vector(200, 200, 0), pow(10, 12));
-	// handler.add_body(a);
 
-	// for (int i = 0; i < 200; ++i){
-	// 	handler.add_body(random_body());
-	// }
-
+	for (int i = 0; i < 100; ++i){
+		handler.add_body(random_body());
+	}
 	make_solar_system(handler);
 }
 
