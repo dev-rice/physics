@@ -10,8 +10,8 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-const int WIDTH = 1366;
-const int HEIGHT = 768;
+const int WIDTH = 800;
+const int HEIGHT = 600;
 const int SENSITIVITY = 6;
 
 void populate_handler(GravityHandler&);

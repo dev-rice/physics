@@ -14,7 +14,7 @@ class GravityHandler {
 public:
 	GravityHandler();
 
-	Vector calculate_gravity_vector(Body, Body);
+	Vector calculate_gravity_vector(Body&, Body&, Vector&, double&);
 
 	void update();
 	void add_body(Body a) {bodies.push_back(a);}

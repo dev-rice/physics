@@ -5,13 +5,14 @@ GravityHandler::GravityHandler(){
 	G = 6.67384 * pow(10, -11);
 }
 
-Vector GravityHandler::calculate_gravity_vector(Body a, Body b){
+Vector GravityHandler::calculate_gravity_vector(Body& a, Body& b, Vector& direction, double& r_squared){
 	// Takes two point masses a and b and finds the gravity
 	// force vector of a, influenced by b.
 	// F = (G M1 M2) / r ^ 2
 
-	Vector direction = get_direction_vector(a, b);
-	double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);	
+	// Extra parameters are passed in to save calculations. direction and r_squared were
+	// already calculated for the collision detection.
+	
 	double F = (G * a.get_mass() * b.get_mass()) / r_squared;
 
 	// Use unit vector for real physics!
@@ -31,17 +32,19 @@ void GravityHandler::update(){
 
 	for (int i = 0; i < bodies.size(); ++i){
 		for (int j = i + 1; j < bodies.size(); ++j){
-			if (bodies[i].is_colliding(bodies[j])){
-				// If there is a collision, combine the bodies and add
-				// the reference of the offending body to be removed.
+			Vector direction = get_direction_vector(bodies[i], bodies[j]);
+			double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
+
+			if (r_squared <= pow(bodies[i].get_radius(), 2)){
+				printf("1: %p colliding with %p\n", &bodies[i], &bodies[j]);
 				bodies[i].combine(bodies[j]);
 				to_remove_bodies.insert(&bodies[j]);
 			} else {
-				// Otherwise, just calculate gravity 
-				Vector gravity = calculate_gravity_vector(bodies[i], bodies[j]);
+				Vector gravity = calculate_gravity_vector(bodies[i], bodies[j], direction, r_squared);
 				bodies[i].add_force(gravity);
 				bodies[j].add_force(gravity * -1);	
-			}	
+			} 
+	
 		}
 		bodies[i].update(dt);
 	}
