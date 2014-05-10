@@ -48,4 +48,9 @@ void DrawingHandler::draw(GravityHandler& handler) {
     text.setPosition(5, 5);
 
     window->draw(text);
+
+    sprintf(to_display, "Warp: %fx", handler.get_time_multiplier());
+    text.setString(to_display);
+    text.setPosition(5, 20);
+    window->draw(text);
 }

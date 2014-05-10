@@ -19,11 +19,12 @@ public:
 	void update();
 	void add_body(Body a) {bodies.push_back(a);}
 	void print();
-	void set_time_multiplier(double time_multiplier) {dt = time_multiplier * BASE_TICK;}
+	void set_time_multiplier(double time_multiplier);
 	void clear() {bodies.clear();}
 
 	std::vector<Body>& get_bodies(){return bodies;}
 	double get_unix_time();
+	double get_time_multiplier() {return time_multiplier;}
 
 private:
 

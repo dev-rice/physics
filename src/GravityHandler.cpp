@@ -64,6 +64,18 @@ void GravityHandler::print(){
 	}
 }
 
+void GravityHandler::set_time_multiplier(double time_multiplier){
+	this->time_multiplier = time_multiplier;
+
+	if (this->time_multiplier > 5){
+		this->time_multiplier = 5;
+	} else if (this->time_multiplier <= 0) {
+		this->time_multiplier = 0;
+	}
+
+	dt = this->time_multiplier * BASE_TICK;
+}
+
 double GravityHandler::get_unix_time() {
     struct timespec tv;
 

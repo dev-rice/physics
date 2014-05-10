@@ -39,3 +39,9 @@ void Body::update_radius(){
 	}
 	
 }
+
+void Body::set_color(int r, int g, int b){
+	this->r = r;
+	this->g = g;
+	this->b = b;
+}

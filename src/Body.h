@@ -21,6 +21,7 @@ public:
 	void combine(Body);
 	void update_radius();
 	void update(double);
+	void set_color(int, int, int);
 
 private:
 	double radius;
