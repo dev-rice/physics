@@ -24,12 +24,12 @@ int main() {
 	srand(time(NULL));
 
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 8;		
+	settings.antialiasingLevel = 4;		
 
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::None, settings);
 	window.setFramerateLimit(60);
 
-	DrawingHandler drawer;
+	DrawingHandler drawer(window);
 	
 	GravityHandler handler;
 	populate_handler(handler);
@@ -94,7 +94,7 @@ int main() {
 		}
 
 		window.clear();
-		drawer.draw(window, handler);
+		drawer.draw(handler);
 
 		if (dragging) {
 			sf::Vector2i current_position = sf::Mouse::getPosition(window);
@@ -175,7 +175,7 @@ void make_solar_system(GravityHandler& handler){
 
 	double io_mass = 2.2 * pow(10, 4);
 	double io_speed = 0.578 * earth_speed;
-	double io_distance = 514;
+	double io_distance = 515;
 	Body io(Vector(WIDTH / 2 - io_distance, HEIGHT / 2, 0), io_mass);
 	io.set_velocity(Vector(0, io_speed, 0));
 	handler.add_body(io);

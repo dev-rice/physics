@@ -1,22 +1,29 @@
 #include "DrawingHandler.h"
 
-DrawingHandler::DrawingHandler() {
+DrawingHandler::DrawingHandler(sf::RenderWindow& window) {
 	x = 0;
 	y = 0;
 
+	this->window = &window;
+
+	load_font();
+}
+
+DrawingHandler::DrawingHandler(sf::RenderWindow& window, double x = 0, double y = 0){
+	this->window = &window;
+	this->x = x;
+	this->y = y;
+
+	load_font();
+}
+
+void DrawingHandler::load_font(){
 	if (!font.loadFromFile("res/ShareTechMono-Regular.ttf")) {
     	printf("Error loading font");
     }
 }
 
-DrawingHandler::DrawingHandler(double x, double y){
-	DrawingHandler();
-	this->x = x;
-	this->y = y;
-
-}
-
-void DrawingHandler::draw(sf::RenderWindow& window, GravityHandler& handler) {
+void DrawingHandler::draw(GravityHandler& handler) {
 
 	std::vector<Body> bodies = handler.get_bodies();
 	for (int i = 0; i < bodies.size(); ++i){
@@ -25,7 +32,7 @@ void DrawingHandler::draw(sf::RenderWindow& window, GravityHandler& handler) {
 		CenterCircle shape(body.get_radius());
 		shape.setPosition(body.get_position().x - x, body.get_position().y - y);
 		shape.setFillColor(sf::Color(body.get_r(), body.get_g(), body.get_b()));
-		window.draw(shape);
+		window->draw(shape);
 
 	}
 
@@ -40,5 +47,5 @@ void DrawingHandler::draw(sf::RenderWindow& window, GravityHandler& handler) {
     text.setColor(sf::Color::White);
     text.setPosition(5, 5);
 
-    window.draw(text);
+    window->draw(text);
 }

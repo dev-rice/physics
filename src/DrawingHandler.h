@@ -5,19 +5,22 @@
 
 class DrawingHandler {
 public:
-	DrawingHandler();
-	DrawingHandler(double, double);
+	DrawingHandler(sf::RenderWindow&);
+	DrawingHandler(sf::RenderWindow&, double, double);
 
 	double get_x() {return x;}
 	double get_y() {return y;}
 
+	void load_font();
 	void set_position(double x, double y) {this->x = x, this->y = y;}
-	void draw(sf::RenderWindow&, GravityHandler&);
+	void draw(GravityHandler&);
 	void move(double dx, double dy) {x += dx, y += dy;}
 
 private:
 	double x, y;
 	
 	sf::Font font;
+
+	sf::RenderWindow* window;
 
 };
