@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 
-class CenterCircle : public sf::Shape {
+class CenterCircle : public sf::CircleShape {
 public :
 
     explicit CenterCircle(const double radius = double(0)) : radius(radius) {
@@ -14,6 +14,8 @@ public :
 
     double get_x() {return x;}
     double get_y() {return y;}
+
+    void set_radius(double radius) {this->radius = radius;}
 
     void setPosition(double x, double y){
         this-> x = x;

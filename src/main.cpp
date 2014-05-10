@@ -10,8 +10,8 @@
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
-const int WIDTH = 1200;
-const int HEIGHT = 700;
+const int WIDTH = 1366;
+const int HEIGHT = 768;
 const int SENSITIVITY = 6;
 
 void populate_handler(GravityHandler&);
@@ -23,7 +23,10 @@ int main() {
 
 	srand(time(NULL));
 
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::Titlebar);
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;		
+
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::None, settings);
 	window.setFramerateLimit(60);
 
 	DrawingHandler drawer;
@@ -44,15 +47,19 @@ int main() {
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			window.clear();
 			drawer.move(-SENSITIVITY, 0);
 		} 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			window.clear();
 			drawer.move(SENSITIVITY, 0);
 		} 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			window.clear();
 			drawer.move(0, SENSITIVITY);
 		} 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			window.clear();
 			drawer.move(0, -SENSITIVITY);
 		}
 
@@ -66,11 +73,16 @@ int main() {
 			populate_handler(handler);
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-			paused = !paused;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+			drawer.set_position(0, 0);
 		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			paused = !paused;
+		} 
 
+
+		window.clear();
 
 		if (!dragging && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     		dragging = true;
@@ -90,7 +102,7 @@ int main() {
 			dragging = false;
 		}
 
-		window.clear();
+		//window.clear();
 		drawer.draw(window, handler);
 
 		if (dragging) {
@@ -131,9 +143,9 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	for (int i = 0; i < 100; ++i){
-		handler.add_body(random_body());
-	}
+	//for (int i = 0; i < 100; ++i){
+	//	handler.add_body(random_body());
+	//}
 	make_solar_system(handler);
 }
 
@@ -179,6 +191,34 @@ void make_solar_system(GravityHandler& handler){
 	Body io(Vector(WIDTH / 2 - io_distance, HEIGHT / 2, 0), io_mass);
 	io.set_velocity(Vector(0, io_speed, 0));
 	handler.add_body(io);
+
+	double saturn_mass = 5.685 * pow(10, 8);
+	double saturn_speed = 0.323 * earth_speed;
+	double saturn_distance = 958;
+	Body saturn(Vector(WIDTH / 2 - saturn_distance, HEIGHT / 2, 0), saturn_mass);
+	saturn.set_velocity(Vector(0, saturn_speed, 0));
+	handler.add_body(saturn);
+
+	double uranus_mass = 8.68 * pow(10, 7);
+	double uranus_speed = 0.227 * earth_speed;
+	double uranus_distance = 1929;
+	Body uranus(Vector(WIDTH / 2 - uranus_distance, HEIGHT / 2, 0), uranus_mass);
+	uranus.set_velocity(Vector(0, uranus_speed, 0));
+	handler.add_body(uranus);
+
+	double neptune_mass = 1.024 * pow(10, 8);
+	double neptune_speed = 0.181 * earth_speed;
+	double neptune_distance = 3010;
+	Body neptune(Vector(WIDTH / 2 - neptune_distance, HEIGHT / 2, 0), neptune_mass);
+	neptune.set_velocity(Vector(0, neptune_speed, 0));
+	handler.add_body(neptune);
+
+	double pluto_mass = 1.3 * pow(10, 4);
+	double pluto_speed = 0.156 * earth_speed;
+	double pluto_distance = 3926;
+	Body pluto(Vector(WIDTH / 2 - pluto_distance, HEIGHT / 2, 0), pluto_mass);
+	pluto.set_velocity(Vector(0, pluto_speed, 0));
+	handler.add_body(pluto);
 
 	double sun_mass = 1.989 * pow(10, 12);
 	Body sun(Vector(WIDTH / 2, HEIGHT / 2 , 0), sun_mass);

@@ -22,20 +22,11 @@ void DrawingHandler::draw(sf::RenderWindow& window, GravityHandler& handler) {
 	for (int i = 0; i < bodies.size(); ++i){
 		Body body = bodies[i];
 
-		Vector* points = body.get_past_points();
-		for (int i = 0; i < Body::TAIL_SIZE; ++i){
-			Vector position = points[i];
-			sf::CircleShape point(0.5);
-			point.setPosition(position.x - x, position.y - y);
-			point.setFillColor(sf::Color(body.get_r(), body.get_g(), body.get_b()));
-			window.draw(point);
-		}
-
 		CenterCircle shape(body.get_radius());
 		shape.setPosition(body.get_position().x - x, body.get_position().y - y);
 		shape.setFillColor(sf::Color(body.get_r(), body.get_g(), body.get_b()));
-		
 		window.draw(shape);
+
 	}
 
  	sf::Text text;

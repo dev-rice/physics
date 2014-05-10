@@ -11,6 +11,7 @@ public:
 	double get_x() {return x;}
 	double get_y() {return y;}
 
+	void set_position(double x, double y) {this->x = x, this->y = y;}
 	void draw(sf::RenderWindow&, GravityHandler&);
 	void move(double dx, double dy) {x += dx, y += dy;}
 
