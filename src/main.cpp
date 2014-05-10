@@ -92,7 +92,7 @@ int main() {
 			Vector velocity = Vector(current_position.x, current_position.y, 0) - Vector(origin.x, origin.y, 0);
 			velocity = velocity / 50;
 
-			Body a(position, pow(10, 10));
+			Body a(position, 1.898 * pow(10, 9));
 			a.set_velocity(velocity);
 
 			handler.add_body(a);
