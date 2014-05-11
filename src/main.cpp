@@ -88,8 +88,7 @@ void handle_events(sf::RenderWindow& window, GravityHandler& handler, DrawingHan
 	while (window.pollEvent(event))
 	{
 	    // check the type of the event...
-	    switch (event.type)
-	    {
+	    switch (event.type){
 	        // window closed
 	        case sf::Event::Closed:
 	            window.close();
@@ -120,7 +119,17 @@ void handle_events(sf::RenderWindow& window, GravityHandler& handler, DrawingHan
 						drawer.set_position(0, 0);
 					}
 				}
+				break;
+			case sf::Event::MouseButtonPressed:
+				// Mouse is pressed down
+				break;
+			case sf::Event::MouseButtonReleased: {
+				// Mouse has been released
+				sf::Vector2i origin = sf::Mouse::getPosition(window);
+				Vector position = Vector(origin.x, origin.y, 0) + Vector(drawer.get_x(), drawer.get_y(), 0);
+				handler.add_body(Body(position, pow(10, 10)));
 	            break;
+	        }	
 
 	        // we don't process other types of events
 	        default:
@@ -165,13 +174,13 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	for (int i = 0; i < 200; ++i){
-		handler.add_body(random_body());
-	}
+	//for (int i = 0; i < 50; ++i){
+	//	handler.add_body(random_body());
+	//}
 
 	//handler.add_body(Body(Vector(WIDTH / 2, HEIGHT / 2, 0), pow(10,10)));
 
-	//make_solar_system(handler);
+	make_solar_system(handler);
 }
 
 void make_solar_system(GravityHandler& handler){
