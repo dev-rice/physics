@@ -1,7 +1,6 @@
 #include "PointMass.h"
 #include "Vector.h"
 #include "GravityHandler.h"
-#include "DrawingHandler.h"
 #include "Body.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -29,50 +28,16 @@ int main() {
 
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::None, settings);
 	window.setFramerateLimit(60);
-
-	DrawingHandler drawer(window);
 	
 	GravityHandler handler;
 	populate_handler(handler);
 	handler.set_time_multiplier(1);
-	
-	bool dragging = false;
-	sf::Vector2i origin;
 
     while (window.isOpen()) {
-
-    	handle_events(window, handler, drawer);
-
-		/*if (!dragging && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-    		dragging = true;
-    		origin = sf::Mouse::getPosition(window);
-		} else if (dragging && !sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			sf::Vector2i current_position = sf::Mouse::getPosition(window);
-
-			Vector position = Vector(origin.x, origin.y, 0) + Vector(drawer.get_x(), drawer.get_y(), 0);
-			Vector velocity = Vector(current_position.x, current_position.y, 0) - Vector(origin.x, origin.y, 0);
-			velocity = velocity / 50;
-
-			Body a(position, 1.898 * pow(10, 9));
-			a.set_velocity(velocity);
-
-			handler.add_body(a);
-
-			dragging = false;
-		}*/
-
+    
 		window.clear();
-		drawer.draw(handler);
 
-		/*if (dragging) {
-			sf::Vector2i current_position = sf::Mouse::getPosition(window);
-			sf::Vertex line[] = {
-			    sf::Vertex(sf::Vector2f(origin.x, origin.y)),
-			    sf::Vertex(sf::Vector2f(current_position.x, current_position.y))
-			};
-
-			window.draw(line, 2, sf::Lines);
-		}*/
+		handle_events(window, handler, drawer);
 
 		handler.update();
 		window.display();
@@ -115,44 +80,20 @@ void handle_events(sf::RenderWindow& window, GravityHandler& handler, DrawingHan
 						handler.clear();
 						window.clear();
 					}	
-					if (event.key.code == sf::Keyboard::H) {
-						drawer.set_position(0, 0);
-					}
 				}
 				break;
 			case sf::Event::MouseButtonPressed:
 				// Mouse is pressed down
 				break;
-			case sf::Event::MouseButtonReleased: {
+			case sf::Event::MouseButtonReleased:
 				// Mouse has been released
-				sf::Vector2i origin = sf::Mouse::getPosition(window);
-				Vector position = Vector(origin.x, origin.y, 0) + Vector(drawer.get_x(), drawer.get_y(), 0);
-				handler.add_body(Body(position, pow(10, 10)));
-	            break;
-	        }	
-
+	            break;	
 	        // we don't process other types of events
 	        default:
 	            break;
 	    }
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		window.clear();
-		drawer.move(-SENSITIVITY, 0);
-	} 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		window.clear();
-		drawer.move(SENSITIVITY, 0);
-	} 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		window.clear();
-		drawer.move(0, SENSITIVITY);
-	} 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		window.clear();
-		drawer.move(0, -SENSITIVITY);
-	}
 }
 
 
