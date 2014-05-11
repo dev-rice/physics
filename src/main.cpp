@@ -14,6 +14,7 @@ const int WIDTH = 800;
 const int HEIGHT = 600;
 const int SENSITIVITY = 6;
 
+void handle_events(sf::RenderWindow&, GravityHandler&, DrawingHandler&);
 void populate_handler(GravityHandler&);
 Body random_body();
 double fRand(double, double);
@@ -40,49 +41,9 @@ int main() {
 
     while (window.isOpen()) {
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-    		window.close();
-		}
+    	handle_events(window, handler, drawer);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			window.clear();
-			drawer.move(-SENSITIVITY, 0);
-		} 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			window.clear();
-			drawer.move(SENSITIVITY, 0);
-		} 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			window.clear();
-			drawer.move(0, SENSITIVITY);
-		} 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			window.clear();
-			drawer.move(0, -SENSITIVITY);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
-			handler.clear();
-			window.clear();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-			handler.clear();
-			window.clear();
-			populate_handler(handler);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
-			drawer.set_position(0, 0);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)){
-			handler.set_time_multiplier(handler.get_time_multiplier() + 0.05);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Dash)){
-			handler.set_time_multiplier(handler.get_time_multiplier() - 0.05);
-		}
-
-		if (!dragging && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		/*if (!dragging && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     		dragging = true;
     		origin = sf::Mouse::getPosition(window);
 		} else if (dragging && !sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -98,12 +59,12 @@ int main() {
 			handler.add_body(a);
 
 			dragging = false;
-		}
+		}*/
 
 		window.clear();
 		drawer.draw(handler);
 
-		if (dragging) {
+		/*if (dragging) {
 			sf::Vector2i current_position = sf::Mouse::getPosition(window);
 			sf::Vertex line[] = {
 			    sf::Vertex(sf::Vector2f(origin.x, origin.y)),
@@ -111,7 +72,7 @@ int main() {
 			};
 
 			window.draw(line, 2, sf::Lines);
-		}
+		}*/
 
 		handler.update();
 		window.display();
@@ -120,25 +81,97 @@ int main() {
     return 0;
 }
 
+void handle_events(sf::RenderWindow& window, GravityHandler& handler, DrawingHandler& drawer){
+	sf::Event event;
+
+	// while there are pending events...
+	while (window.pollEvent(event))
+	{
+	    // check the type of the event...
+	    switch (event.type)
+	    {
+	        // window closed
+	        case sf::Event::Closed:
+	            window.close();
+	            break;
+
+	        // key pressed
+	        case sf::Event::KeyPressed:
+				if (event.type == sf::Event::KeyPressed) {
+				    if (event.key.code == sf::Keyboard::Escape) {
+						window.close();
+				    }
+				    if (event.key.code == sf::Keyboard::Equal){
+						handler.set_time_multiplier(handler.get_time_multiplier() + 0.05);
+					}
+					if (event.key.code == sf::Keyboard::Dash){
+						handler.set_time_multiplier(handler.get_time_multiplier() - 0.05);
+					}
+					if (event.key.code == sf::Keyboard::R) {
+						handler.clear();
+						window.clear();
+						populate_handler(handler);
+					}
+					if (event.key.code == sf::Keyboard::C) {
+						handler.clear();
+						window.clear();
+					}	
+					if (event.key.code == sf::Keyboard::H) {
+						drawer.set_position(0, 0);
+					}
+				}
+	            break;
+
+	        // we don't process other types of events
+	        default:
+	            break;
+	    }
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+		window.clear();
+		drawer.move(-SENSITIVITY, 0);
+	} 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+		window.clear();
+		drawer.move(SENSITIVITY, 0);
+	} 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		window.clear();
+		drawer.move(0, SENSITIVITY);
+	} 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		window.clear();
+		drawer.move(0, -SENSITIVITY);
+	}
+}
+
+
 double fRand(double fMin, double fMax) {
     double f = (double)rand() / RAND_MAX;
     return fMin + f * (fMax - fMin);
 }
 
 Body random_body(){
-	Vector position = Vector(rand() % 400, rand() % 400, 0);
-	Vector velocity = Vector(fRand(0, 0.5), fRand(0, 0.5), 0);
-	double mass = pow(10, rand() % 9);
+	Vector position = Vector(rand() % WIDTH, rand() % HEIGHT, 0);
+	//Vector velocity = Vector(fRand(0, 0.5), fRand(0, 0.5), 0);
+	double mass = pow(10, rand() % 10 + 1);
 	
 	Body a(position, mass);
-	a.set_velocity(velocity);
+	//a.set_velocity(velocity);
 
 	return a;
 }
 
 void populate_handler(GravityHandler& handler){
 
-	make_solar_system(handler);
+	for (int i = 0; i < 200; ++i){
+		handler.add_body(random_body());
+	}
+
+	//handler.add_body(Body(Vector(WIDTH / 2, HEIGHT / 2, 0), pow(10,10)));
+
+	//make_solar_system(handler);
 }
 
 void make_solar_system(GravityHandler& handler){

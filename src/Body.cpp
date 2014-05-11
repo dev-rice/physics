@@ -32,7 +32,7 @@ void Body::combine(Body a){
 }
 
 void Body::update_radius(){
-	radius = log10(mass) - 6;
+	radius = log10(mass) - 4;
 
 	if (radius < 1){
 		radius = 1;

@@ -36,7 +36,6 @@ void GravityHandler::update(){
 			double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
 
 			if (r_squared <= pow(bodies[i].get_radius(), 2)){
-				printf("1: %p colliding with %p\n", &bodies[i], &bodies[j]);
 				bodies[i].combine(bodies[j]);
 				to_remove_bodies.insert(&bodies[j]);
 			} else {
