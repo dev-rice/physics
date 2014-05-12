@@ -8,16 +8,174 @@
 #include <cstdlib>
 #include <time.h>
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
 const int SENSITIVITY = 6;
 
-void handle_events(sf::RenderWindow&, GravityHandler&, DrawingHandler&);
+void handle_events(sf::RenderWindow&, GravityHandler&);
 void populate_handler(GravityHandler&);
 Body random_body();
 double fRand(double, double);
 void make_solar_system(GravityHandler&);
+
+bool    fullscreen=false;   // Fullscreen Flag Set To Fullscreen Mode By Default
+bool    vsync=true;         // Turn VSYNC on/off
+bool    light;              // Lighting ON/OFF ( NEW )
+
+GLfloat xrot;               // X Rotation
+GLfloat yrot;               // Y Rotation
+GLfloat xspeed;             // X Rotation Speed
+GLfloat yspeed;             // Y Rotation Speed
+GLfloat z=-5.0f;            // Depth Into The Screen
+
+GLfloat LightAmbient[]=     { 0.5f, 0.5f, 0.5f, 1.0f };
+GLfloat LightDiffuse[]=     { 1.0f, 1.0f, 1.0f, 1.0f };
+GLfloat LightPosition[]=    { 0.0f, 0.0f, 2.0f, 1.0f };
+
+GLuint  filter;             // Which Filter To Use
+GLuint  texture[3];         // Storage For 3 Textures
+
+int LoadGLTextures()                                    // Load Bitmaps And Convert To Textures
+{
+    int Status=false;                                   // Status Indicator
+
+    // Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
+    sf::Image Image;
+    if (Image.loadFromFile("companion_cube.bmp"))
+    {
+        Status=true;                                    // Set The Status To true
+
+        glGenTextures(3, &texture[0]);                  // Create Three Textures
+
+        // Create Nearest Filtered Texture
+        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, Image.getSize().x, Image.getSize().y, 0, GL_RGBA, 
+            GL_UNSIGNED_BYTE, Image.getPixelsPtr());
+
+        // Create Linear Filtered Texture
+        glBindTexture(GL_TEXTURE_2D, texture[1]);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, Image.getSize().x, Image.getSize().y, 0, GL_RGBA, 
+            GL_UNSIGNED_BYTE, Image.getPixelsPtr());
+
+        // Create MipMapped Texture
+        glBindTexture(GL_TEXTURE_2D, texture[2]);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, Image.getSize().x, Image.getSize().y, GL_RGBA,
+            GL_UNSIGNED_BYTE, Image.getPixelsPtr());
+    }
+
+    return Status;                                      // Return The Status
+}
+
+GLvoid ReSizeGLScene(GLsizei width, GLsizei height)     // Resize And Initialize The GL Window
+{
+    if (height==0)                                      // Prevent A Divide By Zero By
+    {
+        height=1;                                       // Making Height Equal One
+    }
+
+    glViewport(0,0,width,height);                       // Reset The Current Viewport
+
+    glMatrixMode(GL_PROJECTION);                        // Select The Projection Matrix
+    glLoadIdentity();                                   // Reset The Projection Matrix
+
+    // Calculate The Aspect Ratio Of The Window
+    gluPerspective(45.0f,(GLfloat)width/(GLfloat)height,0.1f,100.0f);
+
+    glMatrixMode(GL_MODELVIEW);                         // Select The Modelview Matrix
+    glLoadIdentity();                                   // Reset The Modelview Matrix
+}
+
+int InitGL()                                            // All Setup For OpenGL Goes Here
+{
+    if (!LoadGLTextures())                              // Jump To Texture Loading Routine
+    {
+        return false;                                   // If Texture Didn't Load Return false
+    }
+
+    glEnable(GL_TEXTURE_2D);                            // Enable Texture Mapping
+    glShadeModel(GL_SMOOTH);                            // Enable Smooth Shading
+    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);               // Black Background
+    glClearDepth(1.0f);                                 // Depth Buffer Setup
+    glEnable(GL_DEPTH_TEST);                            // Enables Depth Testing
+    glDepthFunc(GL_LEQUAL);                             // The type Of Depth Testing To Do
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Really Nice Perspective Calculations
+
+    glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);     // Setup The Ambient Light
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);     // Setup The Diffuse Light
+    glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);    // Position The Light
+    glEnable(GL_LIGHT1);                                // Enable Light One
+    return true;                                        // Initialization Went OK
+}
+
+void drawCube(float x, float y, float z){
+    glPushMatrix();
+    glTranslatef(x/10 , y/10, z);
+
+    glRotatef(xrot,1.0f,0.0f,0.0f);
+    glRotatef(yrot,0.0f,1.0f,0.0f);
+
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+
+    glBegin(GL_QUADS);
+        // Front Face
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+        // Back Face
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+        // Top Face
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+        // Bottom Face
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+        // Right face
+        glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+        // Left Face
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+    glEnd();
+
+    glPopMatrix();
+}
+
+int DrawGLScene(GravityHandler& handler){               // Here's Where We Do All The Drawing
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
+    glLoadIdentity();                                   // Reset The View
+    
+    for (int i = 0; i < handler.get_bodies().size(); ++i){
+    	Body a = handler.get_bodies()[i];
+    	Vector position = a.get_position();
+    	//printf("%d: ", i);
+    	//position.print();
+    	drawCube(position.x, position.y, position.z);
+    }
+
+    xrot+=xspeed;
+    yrot+=yspeed;
+    return true;                                        // Keep Going
+}
 
 int main() {
 
@@ -29,24 +187,34 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Gravity", sf::Style::None, settings);
 	window.setFramerateLimit(60);
 	
-	GravityHandler handler;
-	populate_handler(handler);
-	handler.set_time_multiplier(1);
+	GravityHandler gravity_handler;
+	populate_handler(gravity_handler);
+	gravity_handler.set_time_multiplier(1);
+
+	InitGL();
+    ReSizeGLScene(WIDTH, HEIGHT);
 
     while (window.isOpen()) {
-    
-		window.clear();
 
-		handle_events(window, handler, drawer);
+		handle_events(window, gravity_handler);
 
-		handler.update();
+		gravity_handler.update();
+
+		// clear the buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        // draw
+        DrawGLScene(gravity_handler);
+
+        // end the current frame (internally swaps the front and back buffers)
+
 		window.display();
     }
 
     return 0;
 }
 
-void handle_events(sf::RenderWindow& window, GravityHandler& handler, DrawingHandler& drawer){
+void handle_events(sf::RenderWindow& window, GravityHandler& handler){
 	sf::Event event;
 
 	// while there are pending events...
@@ -103,9 +271,9 @@ double fRand(double fMin, double fMax) {
 }
 
 Body random_body(){
-	Vector position = Vector(rand() % WIDTH, rand() % HEIGHT, 0);
+	Vector position = Vector(fRand(-100, 100), fRand(-100, 100), fRand(-100, -50));
 	//Vector velocity = Vector(fRand(0, 0.5), fRand(0, 0.5), 0);
-	double mass = pow(10, rand() % 10 + 1);
+	double mass = pow(10, rand() % 8 + 1);
 	
 	Body a(position, mass);
 	//a.set_velocity(velocity);
@@ -115,13 +283,13 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	//for (int i = 0; i < 50; ++i){
-	//	handler.add_body(random_body());
-	//}
+	for (int i = 0; i < 50; ++i){
+		handler.add_body(random_body());
+	}
 
-	//handler.add_body(Body(Vector(WIDTH / 2, HEIGHT / 2, 0), pow(10,10)));
+	//handler.add_body(Body(Vector(0, 0, -100), pow(10,10)));
 
-	make_solar_system(handler);
+	//make_solar_system(handler);
 }
 
 void make_solar_system(GravityHandler& handler){
