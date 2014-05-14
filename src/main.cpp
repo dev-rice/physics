@@ -271,14 +271,13 @@ void display (void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Load the Identity Matrix to reset our drawing locations
 	glLoadIdentity();
-	
+
 	glRotatef(camera.y_rot, 0.0, 1.0, 0.0);
 	glRotatef(camera.x_rot, 1.0, 0.0, 0.0);
 
 
 	glTranslatef(camera.x, camera.y, camera.z); // Translate our object along the y axis  
 
-	
 	// Do the drawing...
 	for (int i = 0; i < gravity_handler.get_bodies().size(); ++i){
 		// draw_body(gravity_handler.get_bodies()[i]);
