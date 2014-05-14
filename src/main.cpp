@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode (GLUT_SINGLE);
 
 	glutInitWindowSize (500, 500);
-	glutCreateWindow("Your first OpenGL Window");
+	glutCreateWindow("This is physics");
 
 	glutIdleFunc(display);
 	glutDisplayFunc(display);
