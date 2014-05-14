@@ -24,10 +24,16 @@ void make_solar_system(GravityHandler&);
 
 // OpenGL
 void reshape(int, int);
+void keyPressed(unsigned char, int, int);
 void display(void);
+void update(int);
 void draw_body(Body&);
 
 GravityHandler gravity_handler;
+
+float camera_x = 0.0f;
+float camera_y = 0.0f;
+float camera_z = 0.0f;
 
 int main(int argc, char **argv) {
 
@@ -35,17 +41,22 @@ int main(int argc, char **argv) {
 	
 	//GravityHandler gravity_handler;
 	populate_handler(gravity_handler);
-	gravity_handler.set_time_multiplier(2.5);
+	gravity_handler.set_time_multiplier(5);
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode (GLUT_SINGLE);
+	glutInitDisplayMode (GLUT_DEPTH | GLUT_SINGLE);
 
-	glutInitWindowSize (500, 500);
+	glutInitWindowSize (1000, 600);
 	glutCreateWindow("This is physics");
 
 	glutIdleFunc(display);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
+	glutKeyboardFunc(keyPressed);
+
+	glClearDepth(1.0f);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
 
 	glutMainLoop();
 
@@ -58,11 +69,11 @@ double fRand(double fMin, double fMax) {
 
 Body random_body(){
 	Vector position = Vector(fRand(-20, 20), fRand(-20, 20), fRand(-40, -60));
-	//Vector velocity = Vector(fRand(0, 0.5), fRand(0, 0.5), 0);
+	Vector velocity = Vector(fRand(-0.0025, 0.0025), fRand(-0.0025, 0.0025), fRand(-0.0025, 0.0025));
 	double mass = pow(10, 4);
 	
 	Body a(position, mass);
-	//a.set_velocity(velocity);
+	a.set_velocity(velocity);
 
 	return a;
 }
@@ -76,6 +87,13 @@ void populate_handler(GravityHandler& handler){
 	//handler.add_body(Body(Vector(0, 0, -100), pow(10,10)));
 
 	//make_solar_system(handler);
+
+	Body a(Vector(0, 0, -50), pow(10,6));
+	Body b(Vector(0, 0, -45), pow(10, 2));
+	b.set_velocity(Vector(-0.0035, 0.001, 0));
+
+	handler.add_body(a);
+	handler.add_body(b);
 }
 
 void make_solar_system(GravityHandler& handler){
@@ -173,32 +191,37 @@ void reshape(int width, int height) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void display (void) {  
+void keyPressed (unsigned char key, int x, int y) {  
+	if (key == 'w'){
+		camera_y -= 0.1;
+	} else if (key == 's') {
+		camera_y += 0.1;
+	} else if (key == 'a') {
+		camera_x += 0.1;
+	} else if (key == 'd') {
+		camera_x -= 0.1;
+	} else if (key == 'r') {
+		camera_z += 0.1;
+	} else if (key == 'f') {
+		camera_z -= 0.1;
+	}
+}
 
+void display (void) {  
 	gravity_handler.update();
 
-	glClear (GL_COLOR_BUFFER_BIT); 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Load the Identity Matrix to reset our drawing locations
 	glLoadIdentity();
 
+	glTranslatef(camera_x, camera_y, camera_z); // Translate our object along the y axis  
+
 	// Do the drawing...
 	for (int i = 0; i < gravity_handler.get_bodies().size(); ++i){
-		draw_body(gravity_handler.get_bodies()[i]);
+		// draw_body(gravity_handler.get_bodies()[i]);
+		gravity_handler.get_bodies()[i].draw();
 	}
 
 	// Flush the OpenGL buffers to the window
 	glFlush();
-}
-
-void draw_body(Body& body){
-	glPushMatrix();
-	Vector position = body.get_position();
-	glTranslatef(position.x, position.y, position.z);
-	//glTranslatef(-5, 5, -50.0f);
-	double r = body.get_r();
-	double g = body.get_g();
-	double b = body.get_b();
-	glColor3f( r / 255.0, g / 255.0, b / 255.0);
-	glutSolidSphere(body.get_radius(), 12, 12);
-	glPopMatrix();
 }

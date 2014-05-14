@@ -3,6 +3,10 @@
 #include <ctime>
 #include <vector>
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+
 #ifndef Body_h
 #define Body_h
 
@@ -22,6 +26,7 @@ public:
 	void update_radius();
 	void update(double);
 	void set_color(int, int, int);
+	void draw();
 
 private:
 	double radius;
