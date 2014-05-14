@@ -26,14 +26,20 @@ void make_solar_system(GravityHandler&);
 // OpenGL
 void reshape(int, int);
 void keyPressed(unsigned char, int, int);
-void specialKeyPressed(int key, int x, int y);
+void keyReleased(unsigned char, int, int);
+void specialKeyPressed(int, int, int);
+void specialKeyReleased(int, int, int);
+void keyOperations(void);
 void display(void);
 void update(int);
 void draw_body(Body&);
 
 GravityHandler gravity_handler;
 
-Camera camera(0, 0, -500);
+Camera camera(0, 0, 0);
+
+bool* key_states = new bool[256];
+bool* special_key_states = new bool[256];
 
 int main(int argc, char **argv) {
 
@@ -53,7 +59,9 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyPressed);
+	glutKeyboardUpFunc(keyReleased);
 	glutSpecialFunc(specialKeyPressed);
+	glutSpecialUpFunc(specialKeyReleased);
 
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LESS);
@@ -69,7 +77,7 @@ double fRand(double fMin, double fMax) {
 }
 
 Body random_body(){
-	Vector position = Vector(fRand(-200, 200), fRand(-200, 200), fRand(-200, 200));
+	Vector position = Vector(fRand(-200, 200), fRand(-200, 200), fRand(-600, -200));
 	Vector velocity = Vector(fRand(-0.025, 0.025), fRand(-0.025, 0.025), fRand(-0.025, 0.025));
 	double mass = pow(10, 6);
 	
@@ -89,7 +97,7 @@ void populate_handler(GravityHandler& handler){
 
 	//make_solar_system(handler);
 
-	Body a(Vector(0, 0, 0), pow(10,10));
+	Body a(Vector(0, 0, -400), pow(10,10));
 	handler.add_body(a);
 }
 
@@ -189,21 +197,9 @@ void reshape(int width, int height) {
 }
 
 void keyPressed (unsigned char key, int x, int y) {  
-	if (key == 'w'){
-		camera.y -= 1;
-	} else if (key == 's') {
-		camera.y += 1;
-	} else if (key == 'a') {
-		camera.x += 1;
-	} else if (key == 'd') {
-		camera.x -= 1;
-	} else if (key == 'r') {
-		camera.z += 1;
-	} else if (key == 'f') {
-		camera.z -= 1;
-	} else if (key == 'h') {
-		camera.reset();
-	} else if (key == 'i') {
+	key_states[key] = true;
+	
+	if (key == 'i') {
 		camera.reset();
 		gravity_handler.clear();
 		populate_handler(gravity_handler);
@@ -220,29 +216,69 @@ void keyPressed (unsigned char key, int x, int y) {
 	}
 }
 
+void keyReleased(unsigned char key, int x, int y){
+	key_states[key] = false;
+}
+
 void specialKeyPressed(int key, int x, int y) {
-	if (key == GLUT_KEY_UP){
+	special_key_states[key] = true;
+}
+
+void specialKeyReleased(int key, int x, int y) {
+	special_key_states[key] = false;
+}
+
+void keyOperations(void){
+	if (key_states['w']){
+		camera.y -= 1;
+	} 
+	if (key_states['s']) {
+		camera.y += 1;
+	}
+	if (key_states['a']) {
+		camera.x += 1;
+	}
+	if (key_states['d']) {
+		camera.x -= 1;
+	} 
+	if (key_states['r']) {
+		camera.z += 1;
+	}
+	if (key_states['f']) {
+		camera.z -= 1;
+	} 
+	if (key_states['h']) {
+		camera.reset();
+	}
+	if (special_key_states[GLUT_KEY_UP]){
 		camera.x_rot += 1;
-	} else if (key == GLUT_KEY_DOWN){
+	}
+	if (special_key_states[GLUT_KEY_DOWN]){
 		camera.x_rot -= 1;
-	} else if (key == GLUT_KEY_LEFT){
-		camera.y_rot += 1;
-	} else if (key == GLUT_KEY_RIGHT){
+	}
+	if (special_key_states[GLUT_KEY_LEFT]){
 		camera.y_rot -= 1;
+	}
+	if (special_key_states[GLUT_KEY_RIGHT]){
+		camera.y_rot += 1;
 	}
 }
 
 void display (void) {  
+	keyOperations();
 	gravity_handler.update();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Load the Identity Matrix to reset our drawing locations
 	glLoadIdentity();
-
-	glTranslatef(camera.x, camera.y, camera.z); // Translate our object along the y axis  
+	
 	glRotatef(camera.y_rot, 0.0, 1.0, 0.0);
 	glRotatef(camera.x_rot, 1.0, 0.0, 0.0);
 
+
+	glTranslatef(camera.x, camera.y, camera.z); // Translate our object along the y axis  
+
+	
 	// Do the drawing...
 	for (int i = 0; i < gravity_handler.get_bodies().size(); ++i){
 		// draw_body(gravity_handler.get_bodies()[i]);

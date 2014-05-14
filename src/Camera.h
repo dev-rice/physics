@@ -10,5 +10,7 @@ struct Camera {
 		x = init_x;
 		y = init_y;
 		z = init_z;
+		x_rot = 0;
+		y_rot = 0;
 	}
 };
