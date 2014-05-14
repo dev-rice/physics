@@ -24,6 +24,7 @@ void Body::combine(Body a){
 		r = a.get_r();
 		g = a.get_g();
 		b = a.get_b();
+		position = a.get_position();
 	}
 
 	PointMass::combine(a);
@@ -34,8 +35,8 @@ void Body::combine(Body a){
 void Body::update_radius(){
 	radius = log10(mass) - 4;
 
-	if (radius < 1){
-		radius = 1;
+	if (radius < 0.5){
+		radius = 0.5;
 	}
 	
 }
@@ -50,6 +51,9 @@ void Body::draw(){
 	glPushMatrix();
 	glTranslatef(position.x, position.y, position.z);
 	glColor3f( r / 255.0, g / 255.0, b / 255.0);
-	glutSolidSphere(radius, 36, 36);
+	glutWireSphere(radius, 12, 12);
+	// glutSolidSphere(radius, 36, 36);
 	glPopMatrix();
+
+	PointMass::draw();
 }

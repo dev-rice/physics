@@ -2,6 +2,7 @@
 #include "Vector.h"
 #include "GravityHandler.h"
 #include "Body.h"
+#include "Camera.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <cmath>
@@ -12,8 +13,8 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+const int WIDTH = 1366;
+const int HEIGHT = 768;
 const int SENSITIVITY = 6;
 
 void handle_events(sf::RenderWindow&, GravityHandler&);
@@ -25,28 +26,26 @@ void make_solar_system(GravityHandler&);
 // OpenGL
 void reshape(int, int);
 void keyPressed(unsigned char, int, int);
+void specialKeyPressed(int key, int x, int y);
 void display(void);
 void update(int);
 void draw_body(Body&);
 
 GravityHandler gravity_handler;
 
-float camera_x = 0.0f;
-float camera_y = 0.0f;
-float camera_z = 0.0f;
+Camera camera(0, 0, -500);
 
 int main(int argc, char **argv) {
 
 	srand(time(NULL));
 	
-	//GravityHandler gravity_handler;
 	populate_handler(gravity_handler);
-	gravity_handler.set_time_multiplier(5);
+	gravity_handler.set_time_multiplier(1);
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode (GLUT_DEPTH | GLUT_SINGLE);
+	glutInitDisplayMode (GLUT_DEPTH | GLUT_DOUBLE);
 
-	glutInitWindowSize (1366, 768);
+	glutInitWindowSize (WIDTH, HEIGHT);
 	glutCreateWindow("This is physics");
 	glutFullScreen();
 
@@ -54,6 +53,7 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyPressed);
+	glutSpecialFunc(specialKeyPressed);
 
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LESS);
@@ -69,9 +69,9 @@ double fRand(double fMin, double fMax) {
 }
 
 Body random_body(){
-	Vector position = Vector(fRand(-20, 20), fRand(-20, 20), fRand(-40, -60));
-	Vector velocity = Vector(fRand(-0.0025, 0.0025), fRand(-0.0025, 0.0025), fRand(-0.0025, 0.0025));
-	double mass = pow(10, 4);
+	Vector position = Vector(fRand(-200, 200), fRand(-200, 200), fRand(-200, 200));
+	Vector velocity = Vector(fRand(-0.025, 0.025), fRand(-0.025, 0.025), fRand(-0.025, 0.025));
+	double mass = pow(10, 6);
 	
 	Body a(position, mass);
 	a.set_velocity(velocity);
@@ -89,12 +89,8 @@ void populate_handler(GravityHandler& handler){
 
 	//make_solar_system(handler);
 
-	Body a(Vector(0, 0, -50), pow(10,6));
-	// Body b(Vector(0, 0, -45), pow(10, 2));
-	// b.set_velocity(Vector(-0.0035, 0.001, 0));
-
+	Body a(Vector(0, 0, 0), pow(10,10));
 	handler.add_body(a);
-	// handler.add_body(b);
 }
 
 void make_solar_system(GravityHandler& handler){
@@ -188,29 +184,51 @@ void reshape(int width, int height) {
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, (GLfloat)width / (GLfloat)height, 1.0, 100.0);
+	gluPerspective(60, (GLfloat)width / (GLfloat)height, 1.0, 5000.0);
 	glMatrixMode(GL_MODELVIEW);
 }
 
 void keyPressed (unsigned char key, int x, int y) {  
 	if (key == 'w'){
-		camera_y -= 0.1;
+		camera.y -= 1;
 	} else if (key == 's') {
-		camera_y += 0.1;
+		camera.y += 1;
 	} else if (key == 'a') {
-		camera_x += 0.1;
+		camera.x += 1;
 	} else if (key == 'd') {
-		camera_x -= 0.1;
+		camera.x -= 1;
 	} else if (key == 'r') {
-		camera_z += 0.1;
+		camera.z += 1;
 	} else if (key == 'f') {
-		camera_z -= 0.1;
+		camera.z -= 1;
 	} else if (key == 'h') {
-		camera_x = 0.0;
-		camera_y = 0.0;
-		camera_z = 0.0;
-	} else if (key == 27){
+		camera.reset();
+	} else if (key == 'i') {
+		camera.reset();
+		gravity_handler.clear();
+		populate_handler(gravity_handler);
+	} else if (key == 'p') {
+		gravity_handler.clear();
+		populate_handler(gravity_handler);
+	} else if (key == '=') {
+		gravity_handler.set_time_multiplier(gravity_handler.get_time_multiplier() + 0.5);
+	} else if (key == '-') {
+		gravity_handler.set_time_multiplier(gravity_handler.get_time_multiplier() - 0.5);
+	}
+	else if (key == 27){
 		exit(0);
+	}
+}
+
+void specialKeyPressed(int key, int x, int y) {
+	if (key == GLUT_KEY_UP){
+		camera.x_rot += 1;
+	} else if (key == GLUT_KEY_DOWN){
+		camera.x_rot -= 1;
+	} else if (key == GLUT_KEY_LEFT){
+		camera.y_rot += 1;
+	} else if (key == GLUT_KEY_RIGHT){
+		camera.y_rot -= 1;
 	}
 }
 
@@ -221,7 +239,9 @@ void display (void) {
 	// Load the Identity Matrix to reset our drawing locations
 	glLoadIdentity();
 
-	glTranslatef(camera_x, camera_y, camera_z); // Translate our object along the y axis  
+	glTranslatef(camera.x, camera.y, camera.z); // Translate our object along the y axis  
+	glRotatef(camera.y_rot, 0.0, 1.0, 0.0);
+	glRotatef(camera.x_rot, 1.0, 0.0, 0.0);
 
 	// Do the drawing...
 	for (int i = 0; i < gravity_handler.get_bodies().size(); ++i){
@@ -230,5 +250,5 @@ void display (void) {
 	}
 
 	// Flush the OpenGL buffers to the window
-	glFlush();
+	glutSwapBuffers();
 }

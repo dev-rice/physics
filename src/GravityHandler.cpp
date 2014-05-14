@@ -35,7 +35,7 @@ void GravityHandler::update(){
 			Vector direction = get_direction_vector(bodies[i], bodies[j]);
 			double r_squared = pow(direction.x, 2) + pow(direction.y, 2) + pow(direction.z, 2);
 
-			if (r_squared <= pow(bodies[i].get_radius(), 2)){
+			if (r_squared <= pow((bodies[i].get_radius() + bodies[j].get_radius()), 2)){
 				bodies[i].combine(bodies[j]);
 				to_remove_bodies.insert(&bodies[j]);
 			} else {
@@ -45,7 +45,6 @@ void GravityHandler::update(){
 			} 
 	
 		}
-		bodies[i].update(dt);
 	}
 
 	// Removes the specified bodies from the vector bodies.
@@ -56,6 +55,10 @@ void GravityHandler::update(){
 				bodies.erase(bodies.begin() + i);
 			}
 		}
+	}
+
+	for (int i = 0; i < bodies.size(); ++i){
+		bodies[i].update(dt);
 	}
 	
 }

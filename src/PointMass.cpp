@@ -31,6 +31,14 @@ void PointMass::print(){
 	printf("x = %f, y = %f, z = %f, mass = %f\n", position.x, position.y, position.z, mass);
 }
 
+void PointMass::draw(){
+	glPushMatrix();
+	glTranslatef(position.x, position.y, position.z);
+	glColor3f(1.0, 0.0, 0.0);
+	glutSolidSphere(0.25, 6, 6);
+	glPopMatrix();
+}
+
 void PointMass::combine(PointMass to_combine){
 	// Combines this PointMass and to_combine
 	// 	by summing masses

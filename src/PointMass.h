@@ -4,6 +4,10 @@
 #include <cmath>
 #include <cstdlib>
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+
 #ifndef Point_h
 #define Point_h
 
@@ -16,6 +20,7 @@ public:
 	void add_force(Vector);
 	void combine(PointMass);
 	void print();
+	void draw();
 
 	Vector sum_forces();
 	Vector get_velocity() {return velocity;}
