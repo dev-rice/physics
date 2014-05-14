@@ -51,9 +51,9 @@ void Body::draw(){
 	glPushMatrix();
 	glTranslatef(position.x, position.y, position.z);
 	glColor3f( r / 255.0, g / 255.0, b / 255.0);
-	glutWireSphere(radius, 12, 12);
-	// glutSolidSphere(radius, 36, 36);
+	// glutWireSphere(radius, 12, 12);
+	glutSolidSphere(radius, 36, 36);
 	glPopMatrix();
 
-	PointMass::draw();
+	// PointMass::draw();
 }

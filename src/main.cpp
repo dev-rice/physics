@@ -230,10 +230,10 @@ void specialKeyReleased(int key, int x, int y) {
 
 void keyOperations(void){
 	if (key_states['w']){
-		camera.y -= 1;
+		camera.z += 1;
 	} 
 	if (key_states['s']) {
-		camera.y += 1;
+		camera.z -= 1;
 	}
 	if (key_states['a']) {
 		camera.x += 1;
@@ -242,10 +242,10 @@ void keyOperations(void){
 		camera.x -= 1;
 	} 
 	if (key_states['r']) {
-		camera.z += 1;
+		camera.y -= 1;
 	}
 	if (key_states['f']) {
-		camera.z -= 1;
+		camera.y += 1;
 	} 
 	if (key_states['h']) {
 		camera.reset();
