@@ -95,7 +95,7 @@ void populate_handler(GravityHandler& handler){
 
 	//handler.add_body(Body(Vector(0, 0, -100), pow(10,10)));
 
-	//make_solar_system(handler);
+	// make_solar_system(handler);
 
 	Body a(Vector(0, 0, -400), pow(10,10));
 	handler.add_body(a);
@@ -105,7 +105,7 @@ void make_solar_system(GravityHandler& handler){
 	double earth_mass = 5.972 * pow(10, 6);
 	double earth_speed = 1.15;
 	double earth_distance = 100;
-	Body earth(Vector(WIDTH / 2 - earth_distance, HEIGHT / 2, 0), earth_mass);
+	Body earth(Vector(-earth_distance, 0, -1000), earth_mass);
 	earth.set_velocity(Vector(0, earth_speed, 0));
 	earth.set_color(43, 72, 237);
 	handler.add_body(earth);
@@ -113,7 +113,7 @@ void make_solar_system(GravityHandler& handler){
 	double mercury_mass = 3.32 * pow(10, 5);
 	double mercury_speed = 1.577 * earth_speed;
 	double mercury_distance = 38.7;
-	Body mercury(Vector(WIDTH / 2 - mercury_distance, HEIGHT / 2, 0), mercury_mass);
+	Body mercury(Vector(-mercury_distance, 0, -1000), mercury_mass);
 	mercury.set_velocity(Vector(0, mercury_speed, 0));
 	mercury.set_color(179, 179, 179);
 	handler.add_body(mercury);
@@ -121,7 +121,7 @@ void make_solar_system(GravityHandler& handler){
 	double venus_mass = 4.868 * pow(10, 6);
 	double venus_speed = 1.1667 * earth_speed;
 	double venus_distance = 72;
-	Body venus(Vector(WIDTH / 2 - venus_distance, HEIGHT / 2, 0), venus_mass);
+	Body venus(Vector(-venus_distance, 0, -1000), venus_mass);
 	venus.set_velocity(Vector(0, venus_speed, 0));
 	venus.set_color(255, 194, 61);
 	handler.add_body(venus);
@@ -129,7 +129,7 @@ void make_solar_system(GravityHandler& handler){
 	double mars_mass = 6.481 * pow(10, 5);
 	double mars_speed = 0.8 * earth_speed;
 	double mars_distance = 152;
-	Body mars(Vector(WIDTH / 2 - mars_distance, HEIGHT / 2, 0), mars_mass);
+	Body mars(Vector(-mars_distance, 0, -1000), mars_mass);
 	mars.set_velocity(Vector(0, mars_speed, 0));
 	mars.set_color(255, 54, 54);
 	handler.add_body(mars);
@@ -137,15 +137,15 @@ void make_solar_system(GravityHandler& handler){
 	double jupiter_mass = 1.898 * pow(10, 9);
 	double jupiter_speed = 0.436 * earth_speed;
 	double jupiter_distance = 520;
-	Body jupiter(Vector(WIDTH / 2 - jupiter_distance, HEIGHT / 2, 0), jupiter_mass);
+	Body jupiter(Vector(-jupiter_distance, 0, -1000), jupiter_mass);
 	jupiter.set_velocity(Vector(0, jupiter_speed, 0));
 	jupiter.set_color(255, 150, 182);
 	handler.add_body(jupiter);
 
 	double io_mass = 2.2 * pow(10, 4);
 	double io_speed = 0.578 * earth_speed;
-	double io_distance = 515;
-	Body io(Vector(WIDTH / 2 - io_distance, HEIGHT / 2, 0), io_mass);
+	double io_distance = 514;
+	Body io(Vector(-io_distance, 0, -1000), io_mass);
 	io.set_velocity(Vector(0, io_speed, 0));
 	io.set_color(156, 156, 156);
 	handler.add_body(io);
@@ -153,7 +153,7 @@ void make_solar_system(GravityHandler& handler){
 	double saturn_mass = 5.685 * pow(10, 8);
 	double saturn_speed = 0.323 * earth_speed;
 	double saturn_distance = 958;
-	Body saturn(Vector(WIDTH / 2 - saturn_distance, HEIGHT / 2, 0), saturn_mass);
+	Body saturn(Vector(-saturn_distance, 0, -1000), saturn_mass);
 	saturn.set_velocity(Vector(0, saturn_speed, 0));
 	saturn.set_color(255, 202, 168);
 	handler.add_body(saturn);
@@ -161,7 +161,7 @@ void make_solar_system(GravityHandler& handler){
 	double uranus_mass = 8.68 * pow(10, 7);
 	double uranus_speed = 0.227 * earth_speed;
 	double uranus_distance = 1929;
-	Body uranus(Vector(WIDTH / 2 - uranus_distance, HEIGHT / 2, 0), uranus_mass);
+	Body uranus(Vector(-uranus_distance, 0, -1000), uranus_mass);
 	uranus.set_velocity(Vector(0, uranus_speed, 0));
 	uranus.set_color(145, 204, 255);
 	handler.add_body(uranus);
@@ -169,7 +169,7 @@ void make_solar_system(GravityHandler& handler){
 	double neptune_mass = 1.024 * pow(10, 8);
 	double neptune_speed = 0.181 * earth_speed;
 	double neptune_distance = 3010;
-	Body neptune(Vector(WIDTH / 2 - neptune_distance, HEIGHT / 2, 0), neptune_mass);
+	Body neptune(Vector(-neptune_distance, 0, -1000), neptune_mass);
 	neptune.set_velocity(Vector(0, neptune_speed, 0));
 	neptune.set_color(79, 43, 255);
 	handler.add_body(neptune);
@@ -177,13 +177,13 @@ void make_solar_system(GravityHandler& handler){
 	double pluto_mass = 1.3 * pow(10, 4);
 	double pluto_speed = 0.156 * earth_speed;
 	double pluto_distance = 3926;
-	Body pluto(Vector(WIDTH / 2 - pluto_distance, HEIGHT / 2, 0), pluto_mass);
+	Body pluto(Vector(-pluto_distance, 0, -1000), pluto_mass);
 	pluto.set_velocity(Vector(0, pluto_speed, 0));
 	pluto.set_color(162, 158, 184);
 	handler.add_body(pluto);
 
 	double sun_mass = 1.989 * pow(10, 12);
-	Body sun(Vector(WIDTH / 2, HEIGHT / 2 , 0), sun_mass);
+	Body sun(Vector(0, 0, -1000), sun_mass);
 	sun.set_color(255, 234, 163);
 	handler.add_body(sun);
 }
@@ -274,7 +274,6 @@ void display (void) {
 
 	glRotatef(camera.y_rot, 0.0, 1.0, 0.0);
 	glRotatef(camera.x_rot, 1.0, 0.0, 0.0);
-
 
 	glTranslatef(camera.x, camera.y, camera.z); // Translate our object along the y axis  
 
