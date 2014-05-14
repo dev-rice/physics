@@ -46,8 +46,9 @@ int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode (GLUT_DEPTH | GLUT_SINGLE);
 
-	glutInitWindowSize (1000, 600);
+	glutInitWindowSize (1366, 768);
 	glutCreateWindow("This is physics");
+	glutFullScreen();
 
 	glutIdleFunc(display);
 	glutDisplayFunc(display);
@@ -80,7 +81,7 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	for (int i = 0; i < 50; ++i){
+	for (int i = 0; i < 100; ++i){
 		handler.add_body(random_body());
 	}
 
@@ -89,11 +90,11 @@ void populate_handler(GravityHandler& handler){
 	//make_solar_system(handler);
 
 	Body a(Vector(0, 0, -50), pow(10,6));
-	Body b(Vector(0, 0, -45), pow(10, 2));
-	b.set_velocity(Vector(-0.0035, 0.001, 0));
+	// Body b(Vector(0, 0, -45), pow(10, 2));
+	// b.set_velocity(Vector(-0.0035, 0.001, 0));
 
 	handler.add_body(a);
-	handler.add_body(b);
+	// handler.add_body(b);
 }
 
 void make_solar_system(GravityHandler& handler){
@@ -204,6 +205,12 @@ void keyPressed (unsigned char key, int x, int y) {
 		camera_z += 0.1;
 	} else if (key == 'f') {
 		camera_z -= 0.1;
+	} else if (key == 'h') {
+		camera_x = 0.0;
+		camera_y = 0.0;
+		camera_z = 0.0;
+	} else if (key == 27){
+		exit(0);
 	}
 }
 
