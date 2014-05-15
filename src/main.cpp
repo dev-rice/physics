@@ -230,22 +230,22 @@ void specialKeyReleased(int key, int x, int y) {
 
 void keyOperations(void){
 	if (key_states['w']){
-		camera.z += 1;
+		camera.move(0, 0, 1);
 	} 
 	if (key_states['s']) {
-		camera.z -= 1;
+		camera.move(0, 0, -1);
 	}
 	if (key_states['a']) {
-		camera.x += 1;
+		camera.move(1, 0, 0);
 	}
 	if (key_states['d']) {
-		camera.x -= 1;
+		camera.move(-1, 0, 0);
 	} 
 	if (key_states['r']) {
-		camera.y -= 1;
+		camera.move(0, -1, 0);
 	}
 	if (key_states['f']) {
-		camera.y += 1;
+		camera.move(0, 1, 0);
 	} 
 	if (key_states['h']) {
 		camera.reset();
@@ -273,16 +273,15 @@ void display (void) {
 	glLoadIdentity();
 
 	glRotatef(camera.y_rot, 0.0, 1.0, 0.0);
-	glRotatef(camera.x_rot, 1.0, 0.0, 0.0);
+	// glRotatef(camera.x_rot, 1.0, 0.0, 0.0);
 
 	glTranslatef(camera.x, camera.y, camera.z); // Translate our object along the y axis  
 
 	// Do the drawing...
 	for (int i = 0; i < gravity_handler.get_bodies().size(); ++i){
-		// draw_body(gravity_handler.get_bodies()[i]);
 		gravity_handler.get_bodies()[i].draw();
 	}
 
-	// Flush the OpenGL buffers to the window
+	// Swap the OpenGL buffers
 	glutSwapBuffers();
 }
