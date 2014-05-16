@@ -107,8 +107,14 @@ void OpenGLDrawer::display (void) {
 	for (int i = 0; i < gravity_handler->get_bodies().size(); ++i){
 		gravity_handler->get_bodies()[i].draw();
 	}
-	printf("Particles: %d\t Time Multipler: %fx \n", gravity_handler->get_bodies().size(), gravity_handler->get_time_multiplier());
-	glDrawText(0, 0, "Particles:");
+	
+	char particles_str[20];
+	sprintf(particles_str, "Particles: %d", gravity_handler->get_bodies().size());
+	glDrawText(5, 18, particles_str);
+
+	char time_warp_str[20];
+	sprintf(time_warp_str, "Time Warp: %.2fx", gravity_handler->get_time_multiplier());
+	glDrawText(5, 0, time_warp_str);
 
 	// Swap the OpenGL buffers for double buffering
 	glutSwapBuffers();
@@ -125,20 +131,21 @@ void OpenGLDrawer::glDrawText(int x, int y, char* text){
 	glPushMatrix();
 	glLoadIdentity();
 
-	glColor3f(0.0, 1.0, 0.0);
-	glRasterPos2i(10, 10);
+	glColor3f(0.9, 0.9, 0.9);
+	glRasterPos2i(x, HEIGHT - y - 15);
 
 	void* font = GLUT_BITMAP_9_BY_15;
 	for (int i = 0; i < strlen(text); ++i) {
 	    glutBitmapCharacter(font, text[i]);
 	}
-	printf("Drawing at (%d, %d), \"%s\"\n", x, y, text);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
+	
+	glMatrixMode(GL_MODELVIEW);
 
 }
 
