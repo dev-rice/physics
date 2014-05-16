@@ -36,7 +36,8 @@ private:
 	double dt;
 	double time_multiplier;
 
-	static const double BASE_TICK = 1.0; // Set base tick speed to 1 second
+	const static double BASE_TICK = 1.0; // Set base tick speed to 1 second
+	const static double MULTIPLIER_LIMIT = 15.0;
 
 };
 

@@ -3,6 +3,8 @@
 #include "GravityHandler.h"
 #include "Body.h"
 #include "Camera.h"
+#include "OpenGLDrawer.h"
+
 #include <stdio.h>
 #include <unistd.h>
 #include <cmath>
@@ -14,10 +16,6 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-const int WIDTH = 1366;
-const int HEIGHT = 768;
-
-void handle_events(sf::RenderWindow&, GravityHandler&);
 void populate_handler(GravityHandler&);
 Body random_body();
 double fRand(double, double);
@@ -32,42 +30,19 @@ void specialKeyReleased(int, int, int);
 void keyOperations(void);
 void display(void);
 
-GravityHandler gravity_handler;
-
-Camera camera;
-
 bool* key_states = new bool[256];
 bool* special_key_states = new bool[256];
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 
 	srand(time(NULL));
-	
+
+	GravityHandler gravity_handler;
 	populate_handler(gravity_handler);
 	gravity_handler.set_time_multiplier(1);
 
-	glutInit(&argc, argv);
-	glutInitDisplayMode (GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_DOUBLE);
-
-	glutInitWindowSize (WIDTH, HEIGHT);
-	glutCreateWindow("This is physics");
-	glutFullScreen();
-
-	glutIdleFunc(display);
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutKeyboardFunc(keyPressed);
-	glutKeyboardUpFunc(keyReleased);
-	glutSpecialFunc(specialKeyPressed);
-	glutSpecialUpFunc(specialKeyReleased);
-
-	glClearDepth(1.0f);
-	glDepthFunc(GL_LESS);
-	glEnable(GL_DEPTH_TEST);
-
-	glEnable(GL_MULTISAMPLE);
-
-	glutMainLoop();
+	OpenGLDrawer drawer(gravity_handler);
+	drawer.startOpenGL(argc, argv);
 
 }
 
@@ -89,7 +64,7 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	for (int i = 0; i < 200; ++i){
+	for (int i = 0; i < 100; ++i){
 		handler.add_body(random_body());
 	}
 
@@ -186,90 +161,4 @@ void make_solar_system(GravityHandler& handler){
 	Body sun(Vector(0, 0, -1000), sun_mass);
 	sun.set_color(255, 234, 163);
 	handler.add_body(sun);
-}
-
-void reshape(int width, int height) {
-	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60, (GLfloat)width / (GLfloat)height, 1.0, 5000.0);
-	glMatrixMode(GL_MODELVIEW);
-}
-
-void keyPressed (unsigned char key, int x, int y) {  
-	key_states[key] = true;
-	
-	if (key == 'i') {
-		camera.reset();
-		gravity_handler.clear();
-		populate_handler(gravity_handler);
-	} else if (key == 'p') {
-		gravity_handler.clear();
-		populate_handler(gravity_handler);
-	} else if (key == '=') {
-		gravity_handler.set_time_multiplier(gravity_handler.get_time_multiplier() + 0.5);
-	} else if (key == '-') {
-		gravity_handler.set_time_multiplier(gravity_handler.get_time_multiplier() - 0.5);
-	}
-	else if (key == 27){
-		exit(0);
-	}
-}
-
-void keyReleased(unsigned char key, int x, int y){
-	key_states[key] = false;
-}
-
-void specialKeyPressed(int key, int x, int y) {
-	special_key_states[key] = true;
-}
-
-void specialKeyReleased(int key, int x, int y) {
-	special_key_states[key] = false;
-}
-
-void keyOperations(void){
-	if (key_states['w']){
-		camera.z += 1;
-	} 
-	if (key_states['s']) {
-		camera.z -= 1;
-	}
-	if (key_states['a']) {
-		camera.x += 1;
-	}
-	if (key_states['d']) {
-		camera.x -= 1;
-	} 
-	if (key_states['r']) {
-		camera.y -= 1;
-	}
-	if (key_states['f']) {
-		camera.y += 1;
-	} 
-	if (key_states['h']) {
-		camera.reset();
-	}
-}
-
-void display (void) {  
-	keyOperations();
-	gravity_handler.update();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	// Load the Identity Matrix to reset our drawing locations
-	glLoadIdentity();
-
-	// Translate the world such that the camera remains at (0, 0, 0)
-	glTranslatef(camera.x, camera.y, camera.z);
-
-	// Do the drawing...
-	for (int i = 0; i < gravity_handler.get_bodies().size(); ++i){
-		gravity_handler.get_bodies()[i].draw();
-	}
-
-	printf("Particles: %d\n", gravity_handler.get_bodies().size());
-
-	// Swap the OpenGL buffers for double buffering
-	glutSwapBuffers();
 }
