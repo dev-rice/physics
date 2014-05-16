@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <time.h>
+#include <cstring>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -15,7 +16,6 @@
 
 const int WIDTH = 1366;
 const int HEIGHT = 768;
-const int SENSITIVITY = 6;
 
 void handle_events(sf::RenderWindow&, GravityHandler&);
 void populate_handler(GravityHandler&);
@@ -31,12 +31,10 @@ void specialKeyPressed(int, int, int);
 void specialKeyReleased(int, int, int);
 void keyOperations(void);
 void display(void);
-void update(int);
-void draw_body(Body&);
 
 GravityHandler gravity_handler;
 
-Camera camera(0, 0, 0);
+Camera camera;
 
 bool* key_states = new bool[256];
 bool* special_key_states = new bool[256];
@@ -49,7 +47,7 @@ int main(int argc, char **argv) {
 	gravity_handler.set_time_multiplier(1);
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode (GLUT_DEPTH | GLUT_DOUBLE);
+	glutInitDisplayMode (GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_DOUBLE);
 
 	glutInitWindowSize (WIDTH, HEIGHT);
 	glutCreateWindow("This is physics");
@@ -67,6 +65,8 @@ int main(int argc, char **argv) {
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
 
+	glEnable(GL_MULTISAMPLE);
+
 	glutMainLoop();
 
 }
@@ -77,19 +77,19 @@ double fRand(double fMin, double fMax) {
 }
 
 Body random_body(){
-	Vector position = Vector(fRand(-200, 200), fRand(-200, 200), fRand(-600, -200));
+	Vector position = Vector(fRand(-100, 100), fRand(-100, 100), fRand(-600, -200));
 	Vector velocity = Vector(fRand(-0.025, 0.025), fRand(-0.025, 0.025), fRand(-0.025, 0.025));
-	double mass = pow(10, 6);
+	double mass = pow(10, rand() % 4 + 4);
 	
 	Body a(position, mass);
-	a.set_velocity(velocity);
+	// a.set_velocity(velocity);
 
 	return a;
 }
 
 void populate_handler(GravityHandler& handler){
 
-	for (int i = 0; i < 100; ++i){
+	for (int i = 0; i < 200; ++i){
 		handler.add_body(random_body());
 	}
 
@@ -97,8 +97,8 @@ void populate_handler(GravityHandler& handler){
 
 	// make_solar_system(handler);
 
-	Body a(Vector(0, 0, -400), pow(10,10));
-	handler.add_body(a);
+	// Body a(Vector(0, 0, -400), pow(10,10));
+	// handler.add_body(a);
 }
 
 void make_solar_system(GravityHandler& handler){
@@ -230,37 +230,25 @@ void specialKeyReleased(int key, int x, int y) {
 
 void keyOperations(void){
 	if (key_states['w']){
-		camera.move(0, 0, 1);
+		camera.z += 1;
 	} 
 	if (key_states['s']) {
-		camera.move(0, 0, -1);
+		camera.z -= 1;
 	}
 	if (key_states['a']) {
-		camera.move(1, 0, 0);
+		camera.x += 1;
 	}
 	if (key_states['d']) {
-		camera.move(-1, 0, 0);
+		camera.x -= 1;
 	} 
 	if (key_states['r']) {
-		camera.move(0, -1, 0);
+		camera.y -= 1;
 	}
 	if (key_states['f']) {
-		camera.move(0, 1, 0);
+		camera.y += 1;
 	} 
 	if (key_states['h']) {
 		camera.reset();
-	}
-	if (special_key_states[GLUT_KEY_UP]){
-		camera.x_rot += 1;
-	}
-	if (special_key_states[GLUT_KEY_DOWN]){
-		camera.x_rot -= 1;
-	}
-	if (special_key_states[GLUT_KEY_LEFT]){
-		camera.y_rot -= 1;
-	}
-	if (special_key_states[GLUT_KEY_RIGHT]){
-		camera.y_rot += 1;
 	}
 }
 
@@ -272,16 +260,16 @@ void display (void) {
 	// Load the Identity Matrix to reset our drawing locations
 	glLoadIdentity();
 
-	glRotatef(camera.y_rot, 0.0, 1.0, 0.0);
-	// glRotatef(camera.x_rot, 1.0, 0.0, 0.0);
-
-	glTranslatef(camera.x, camera.y, camera.z); // Translate our object along the y axis  
+	// Translate the world such that the camera remains at (0, 0, 0)
+	glTranslatef(camera.x, camera.y, camera.z);
 
 	// Do the drawing...
 	for (int i = 0; i < gravity_handler.get_bodies().size(); ++i){
 		gravity_handler.get_bodies()[i].draw();
 	}
 
-	// Swap the OpenGL buffers
+	printf("Particles: %d\n", gravity_handler.get_bodies().size());
+
+	// Swap the OpenGL buffers for double buffering
 	glutSwapBuffers();
 }

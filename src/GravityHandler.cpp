@@ -72,7 +72,7 @@ void GravityHandler::print(){
 void GravityHandler::set_time_multiplier(double time_multiplier){
 	this->time_multiplier = time_multiplier;
 
-	if (this->time_multiplier > 10){
+	if (this->time_multiplier > 15){
 		this->time_multiplier = 10;
 	} else if (this->time_multiplier <= 0) {
 		this->time_multiplier = 0;
