@@ -41,6 +41,8 @@ void GlutFramework::init(GravityHandler& gravity_handler){
 	special_key_states = new bool[256];
 	this->gravity_handler = &gravity_handler;
 	setInstance();
+
+	camera.set_move_sensitivity(2);
 }
 
 void GlutFramework::reshape(int width, int height) {
@@ -104,10 +106,10 @@ void GlutFramework::keyOperations(void){
 		camera.reset();
 	}
 	if (special_key_states[GLUT_KEY_LEFT]){
-		camera.y_rot -= 0.5;
+		camera.rotate_y(-1);
 	}
 	if (special_key_states[GLUT_KEY_RIGHT]){
-		camera.y_rot += 0.5;
+		camera.rotate_y(1);
 	}
 }
 
@@ -137,7 +139,7 @@ void GlutFramework::display (void) {
 	glDrawText(5, 15, particles_str);
 
 	char camera_str[50];
-	sprintf(camera_str, "x: %.1f, y: %.1f, z: %.1f", camera.x, camera.y, camera.z);
+	sprintf(camera_str, "x: %.1f, y: %.1f, z: %.1f, y_rot: %.1f", camera.x, camera.y, camera.z, camera.y_rot);
 	glDrawText(5, 30, camera_str);
 	// Swap the OpenGL buffers for double buffering
 	glutSwapBuffers();

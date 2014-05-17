@@ -37,7 +37,7 @@ double fRand(double fMin, double fMax) {
 Body random_body(){
 	Vector position = Vector(fRand(-100, 100), fRand(-100, 100), fRand(-600, -200));
 	Vector velocity = Vector(fRand(-0.25, 0.25), fRand(-0.25, 0.25), fRand(-0.25, 0.25));
-	double mass = pow(10, rand() % 4 + 1);
+	double mass = pow(10, rand() % 4 + 4);
 	
 	Body a(position, mass);
 	a.set_velocity(velocity);
@@ -47,15 +47,16 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	// for (int i = 0; i < 10; ++i){
-	// 	handler.add_body(random_body());
+	// for (int i = 0; i < 150; ++i){
+		// handler.add_body(random_body());
 	// }
 
-	// generate_cube(handler, 5, 400);
-	Body a(Vector(0, 0, -400), 0.0001);
-	handler.add_body(a);
+	generate_cube(handler, 6, 400);
+	
+	// Body a(Vector(0, 0, -400), pow(10, 12));
+	// handler.add_body(a);
 
-	generate_solar_system(handler);
+	// generate_solar_system(handler);
 
 
 }
