@@ -19,7 +19,8 @@
 void populate_handler(GravityHandler&);
 Body random_body();
 double fRand(double, double);
-void make_solar_system(GravityHandler&);
+void generate_solar_system(GravityHandler&);
+void generate_cube(GravityHandler&, int, double);
 
 // OpenGL
 void reshape(int, int);
@@ -37,12 +38,11 @@ int main(int argc, char** argv) {
 
 	srand(time(NULL));
 
-	GravityHandler gravity_handler;
+	GravityHandler gravity_handler(5);
 	populate_handler(gravity_handler);
-	gravity_handler.set_time_multiplier(1);
 
-	OpenGLDrawer drawer(gravity_handler);
-	drawer.startOpenGL(argc, argv);
+	OpenGLDrawer drawer(gravity_handler, argc, argv);
+	//drawer.startOpenGL(argc, argv);
 
 }
 
@@ -64,19 +64,21 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	for (int i = 0; i < 100; ++i){
-		handler.add_body(random_body());
-	}
+	// for (int i = 0; i < 200; ++i){
+	// 	handler.add_body(random_body());
+	// }
+
+	generate_cube(handler, 5, 400);
 
 	//handler.add_body(Body(Vector(0, 0, -100), pow(10,10)));
 
-	// make_solar_system(handler);
+	// generate_solar_system(handler);
 
 	// Body a(Vector(0, 0, -400), pow(10,10));
 	// handler.add_body(a);
 }
 
-void make_solar_system(GravityHandler& handler){
+void generate_solar_system(GravityHandler& handler){
 	double earth_mass = 5.972 * pow(10, 6);
 	double earth_speed = 1.15;
 	double earth_distance = 100;
@@ -161,4 +163,21 @@ void make_solar_system(GravityHandler& handler){
 	Body sun(Vector(0, 0, -1000), sun_mass);
 	sun.set_color(255, 234, 163);
 	handler.add_body(sun);
+}
+
+void generate_cube(GravityHandler& handler, int n, double width){
+	
+	double size = width / (double(1) - double(1) / double(n));
+	// double width = size - (size / double(n));
+	
+	for (int x = 0; x < n; ++x){
+		for (int y = 0; y < n; ++y){
+			for (int z = 0; z < n; ++z){
+				Vector position((x * size / double(n)) - ((width / 2)), 
+					(y * size / double(n)) - ((width / 2)), 
+					z * size / double(n) - 800);
+				handler.add_body(Body(position, pow(10, 8)));
+			}
+		}
+	}
 }

@@ -2,11 +2,13 @@
 
 OpenGLDrawer *OpenGLDrawer::instance = NULL;
 
-OpenGLDrawer::OpenGLDrawer(GravityHandler& gravity_handler) {
-	key_states = new bool[256];
-	special_key_states = new bool[256];
+OpenGLDrawer::OpenGLDrawer(GravityHandler& gravity_handler){
+	init(gravity_handler);
+}
 
-	this->gravity_handler = &gravity_handler;
+OpenGLDrawer::OpenGLDrawer(GravityHandler& gravity_handler, int argc, char** argv) {
+	init(gravity_handler);
+	startOpenGL(argc, argv);
 }
 
 void OpenGLDrawer::startOpenGL(int argc, char** argv){
@@ -36,6 +38,12 @@ void OpenGLDrawer::startOpenGL(int argc, char** argv){
 	glutMainLoop();
 }
 
+void OpenGLDrawer::init(GravityHandler& gravity_handler){
+	key_states = new bool[256];
+	special_key_states = new bool[256];
+	this->gravity_handler = &gravity_handler;
+}
+
 void OpenGLDrawer::reshape(int width, int height) {
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 	glMatrixMode(GL_PROJECTION);
@@ -48,12 +56,18 @@ void OpenGLDrawer::keyPressed (unsigned char key, int x, int y) {
 	key_states[key] = true;
 	
 	if (key == '=') {
-		gravity_handler->set_time_multiplier(gravity_handler->get_time_multiplier() + 0.5);
+		gravity_handler->increment_time_multiplier(0.5);
 	} else if (key == '-') {
-		gravity_handler->set_time_multiplier(gravity_handler->get_time_multiplier() - 0.5);
+		gravity_handler->increment_time_multiplier(-0.5);
+	} else if (key == ' ') {
+		if (gravity_handler->is_paused()){
+			gravity_handler->unpause();
+		} else {
+			gravity_handler->pause();
+		}
 	} else if (key == 27){
 		exit(0);
-	}
+	} 
 }
 
 void OpenGLDrawer::keyReleased(unsigned char key, int x, int y){
@@ -108,14 +122,17 @@ void OpenGLDrawer::display (void) {
 		gravity_handler->get_bodies()[i].draw();
 	}
 	
-	char particles_str[20];
-	sprintf(particles_str, "Particles: %d", gravity_handler->get_bodies().size());
-	glDrawText(5, 18, particles_str);
-
 	char time_warp_str[20];
 	sprintf(time_warp_str, "Time Warp: %.2fx", gravity_handler->get_time_multiplier());
 	glDrawText(5, 0, time_warp_str);
 
+	char particles_str[20];
+	sprintf(particles_str, "Particles: %d", gravity_handler->get_bodies().size());
+	glDrawText(5, 15, particles_str);
+
+	char camera_str[50];
+	sprintf(camera_str, "x: %.1f, y: %.1f, z: %.1f", camera.x, camera.y, camera.z);
+	glDrawText(5, 30, camera_str);
 	// Swap the OpenGL buffers for double buffering
 	glutSwapBuffers();
 

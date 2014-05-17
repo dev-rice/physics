@@ -14,12 +14,15 @@
 class OpenGLDrawer {
 public:
 	OpenGLDrawer(GravityHandler&);
-	void startOpenGL(int, char**);
+	OpenGLDrawer(GravityHandler&, int, char**);
 
 protected:
 	static OpenGLDrawer* instance;
 
 private:
+	void startOpenGL(int, char**);
+	void init(GravityHandler&);
+
 	void reshape(int, int);
 	void keyPressed(unsigned char, int, int);
 	void keyReleased(unsigned char, int, int);
