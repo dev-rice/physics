@@ -3,7 +3,7 @@
 #include "GravityHandler.h"
 #include "Body.h"
 #include "Camera.h"
-#include "OpenGLDrawer.h"
+#include "GlutFramework.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -12,37 +12,20 @@
 #include <time.h>
 #include <cstring>
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-
 void populate_handler(GravityHandler&);
 Body random_body();
 double fRand(double, double);
 void generate_solar_system(GravityHandler&);
 void generate_cube(GravityHandler&, int, double);
 
-// OpenGL
-void reshape(int, int);
-void keyPressed(unsigned char, int, int);
-void keyReleased(unsigned char, int, int);
-void specialKeyPressed(int, int, int);
-void specialKeyReleased(int, int, int);
-void keyOperations(void);
-void display(void);
-
-bool* key_states = new bool[256];
-bool* special_key_states = new bool[256];
-
 int main(int argc, char** argv) {
 
 	srand(time(NULL));
 
-	GravityHandler gravity_handler(5);
+	GravityHandler gravity_handler(0);
 	populate_handler(gravity_handler);
 
-	OpenGLDrawer drawer(gravity_handler, argc, argv);
-	//drawer.startOpenGL(argc, argv);
+	GlutFramework drawer(gravity_handler, argc, argv);
 
 }
 
@@ -53,29 +36,28 @@ double fRand(double fMin, double fMax) {
 
 Body random_body(){
 	Vector position = Vector(fRand(-100, 100), fRand(-100, 100), fRand(-600, -200));
-	Vector velocity = Vector(fRand(-0.025, 0.025), fRand(-0.025, 0.025), fRand(-0.025, 0.025));
-	double mass = pow(10, rand() % 4 + 4);
+	Vector velocity = Vector(fRand(-0.25, 0.25), fRand(-0.25, 0.25), fRand(-0.25, 0.25));
+	double mass = pow(10, rand() % 4 + 1);
 	
 	Body a(position, mass);
-	// a.set_velocity(velocity);
+	a.set_velocity(velocity);
 
 	return a;
 }
 
 void populate_handler(GravityHandler& handler){
 
-	// for (int i = 0; i < 200; ++i){
+	// for (int i = 0; i < 10; ++i){
 	// 	handler.add_body(random_body());
 	// }
 
-	generate_cube(handler, 5, 400);
+	// generate_cube(handler, 5, 400);
+	Body a(Vector(0, 0, -400), 0.0001);
+	handler.add_body(a);
 
-	//handler.add_body(Body(Vector(0, 0, -100), pow(10,10)));
+	generate_solar_system(handler);
 
-	// generate_solar_system(handler);
 
-	// Body a(Vector(0, 0, -400), pow(10,10));
-	// handler.add_body(a);
 }
 
 void generate_solar_system(GravityHandler& handler){
@@ -168,7 +150,6 @@ void generate_solar_system(GravityHandler& handler){
 void generate_cube(GravityHandler& handler, int n, double width){
 	
 	double size = width / (double(1) - double(1) / double(n));
-	// double width = size - (size / double(n));
 	
 	for (int x = 0; x < n; ++x){
 		for (int y = 0; y < n; ++y){
