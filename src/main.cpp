@@ -47,13 +47,13 @@ Body random_body(){
 
 void populate_handler(GravityHandler& handler){
 
-	// for (int i = 0; i < 150; ++i){
-		// handler.add_body(random_body());
-	// }
+	for (int i = 0; i < 100; ++i){
+		handler.add_body(random_body());
+	}
 
-	generate_cube(handler, 6, 400);
+	// generate_cube(handler, 6, 400);
 	
-	// Body a(Vector(0, 0, -400), pow(10, 12));
+	// Body a(Vector(0, 0, -400), pow(10, 0));
 	// handler.add_body(a);
 
 	// generate_solar_system(handler);

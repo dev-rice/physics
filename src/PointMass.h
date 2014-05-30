@@ -1,6 +1,5 @@
 #include "Vector.h"
 #include <vector>
-#include <SFML/Graphics.hpp>
 #include <cmath>
 #include <cstdlib>
 

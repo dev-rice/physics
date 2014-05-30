@@ -51,8 +51,8 @@ private:
 	Camera camera;
 	GravityHandler* gravity_handler;
 
-	const static int WIDTH = 1920;
-	const static int HEIGHT = 1080;
+	const static int WIDTH = 1366;
+	const static int HEIGHT = 768;
 
 	const static int KEY_UP = GLUT_KEY_UP;
 	const static int KEY_DOWN = GLUT_KEY_DOWN;
